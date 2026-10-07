@@ -31,14 +31,20 @@ const path = Astro.url.pathname;
   .soon { color: var(--ink-2); }
   .actions { display: flex; align-items: center; gap: var(--s1); white-space: nowrap; }
   .theme { padding: 0 var(--s1); min-width: var(--touch); }
-  :root:not([data-theme='dark']) .theme .icon:last-child, :root[data-theme='dark'] .theme .icon:first-child { display: none; }
+  :root .theme .icon:last-child { display: none; }
+  :root[data-theme='dark'] .theme .icon:first-child { display: none; }
+  :root[data-theme='dark'] .theme .icon:last-child { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme .icon:first-child { display: none; }
+    :root:not([data-theme='light']) .theme .icon:last-child { display: block; }
+  }
   .menu { display: none; padding: 0 var(--s1); min-width: var(--touch); }
-  /* The only place the breakpoint lives; the script reads the menu button's visibility instead (P16). */
   @media (max-width: 1024px) {
     .menu { display: inline-flex; }
     nav { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 10; flex-direction: column; align-items: stretch; padding: var(--s2); background: var(--paper); border-bottom: 2px solid var(--line); }
     nav.open { display: flex; }
     ul { flex-direction: column; gap: 0; }
+    ul a, .soon { width: 100%; }
   }
 </style>
 <script>
@@ -58,8 +64,10 @@ const path = Astro.url.pathname;
     const t = e.target as HTMLElement;
     if (links.classList.contains('open') && (!t.closest('.nav') || t.closest('#nav-links a, #nav-links [data-waitlist]'))) setOpen(false);
   });
-  // Grown past the breakpoint: the menu button is hidden, so a stale open state must go.
-  addEventListener('resize', () => { if (!menu.offsetParent && links.classList.contains('open')) setOpen(false); });
+  const mql = matchMedia('(max-width: 1024px)');
+  mql.addEventListener('change', (e) => {
+    if (!e.matches && links.classList.contains('open')) setOpen(false);
+  });
 
   const theme = document.querySelector<HTMLButtonElement>('.theme')!;
   const root = document.documentElement;
@@ -69,5 +77,8 @@ const path = Astro.url.pathname;
     root.dataset.theme = isDark() ? 'light' : 'dark';
     theme.setAttribute('aria-pressed', String(isDark()));
     try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!root.dataset.theme) theme.setAttribute('aria-pressed', String(isDark()));
   });
 </script>

@@ -111,3 +111,10 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - Redaction bar: exactly two on the site, 404 ("missing") and Status ("750"). In forced-colors mode the word shows, outlined; in print the bar prints as a bar.
 - Waitlist (2026-10-08): no plan or source tags (P4 closed, AGENTS.md unchanged). An already-subscribed address gets the same success reply as a new one, so membership is never revealed (P5 closed); the `exists` and `unconfirmed` errors are gone from the function, the dialog and `dialogue.md`. The reply shape for a duplicate is still unverified against the real API.
 - Copy decisions (2026-10-08): the Free plan is removed (see Pricing). The FAQ keeps "uncensored AI" in "Who is this for?" on purpose, as what people search for.
+
+## Nav and mobile menu (2026-10-08, Track C)
+
+- Desktop nav breakpoint is 1024 px: below this, nav collapses to hamburger menu; above this, desktop links fit with no wrapping.
+- Header has `position: relative`, mobile menu has `top: 100%`, so multi-line notice bars do not displace the dropdown.
+- Closing behavior: closes on Escape (focus returned to menu button), outside click, link click, or when crossing above 1024 px via `matchMedia`. Opening focuses the first menu item.
+- Theme button has `aria-label="Dark theme"` and `aria-pressed` reflecting dark mode state; icon visibility syncs with system preference and manual theme override.
