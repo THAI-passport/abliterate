@@ -2,9 +2,27 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 ---
-<Base title="Acceptable use">
-  <PageHead eyebrow="Legal" title="Acceptable use">[COPY: Acceptable use intro]</PageHead>
+<Base title="Acceptable use policy" description="What you may not do with the abliterate service, and how the policy is enforced.">
+  <PageHead title="Acceptable use policy" status="Draft, 2026-10-08. For legal review before launch." />
   <article class="wrap prose">
-    <p>[COPY: acceptable-use policy. Strictly serious.]</p>
+    <p>abliterate sells access to abliterated models: open-weight models with their refusal behavior removed. That describes the models. It does not describe the service, which has limits. This policy lists them.</p>
+    <h2>What you may not do</h2>
+    <ul>
+      <li>Create, request or distribute sexual content involving minors.</li>
+      <li>Generate content intended to incite or plan violence against identifiable people.</li>
+      <li>Harass, threaten or dox a specific person.</li>
+      <li>Commit fraud, or impersonate a real person to deceive others.</li>
+      <li>Develop malware, or attack systems you do not own or have permission to test.</li>
+      <li>Seek instructions intended to cause mass-casualty harm.</li>
+      <li>Share or resell your API key, or circumvent rate limits and billing.</li>
+    </ul>
+    <h2>Your responsibility</h2>
+    <p>You are responsible for the prompts you send and for what you do with the outputs. Models make mistakes. Check anything that matters.</p>
+    <h2>Enforcement</h2>
+    <p>Prompts and completions are not stored, so abliterate cannot review your content. Violations are handled through billing metadata patterns, user reports and valid legal process. Breaking this policy can end your access. Unused credits after a violation: [CONFIRM: policy].</p>
+    <h2>Reporting</h2>
+    <p>Report a violation to <a href="mailto:hello@abliterate.app">hello@abliterate.app</a>.</p>
+    <h2>Changes</h2>
+    <p>The policy can change. The date at the top says when it last did.</p>
   </article>
 </Base>

@@ -12,11 +12,11 @@ const path = Astro.url.pathname;
       <ul>
         {nav.map((n) => n.href
           ? <li><a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
-          : <li><span class="soon">{n.label} <span class="tag">Soon</span></span></li>)}
+          : <li><span class="soon">{n.label} <span class="tag">soon</span></span></li>)}
       </ul>
       <div class="actions">
         <button class="btn theme" type="button" aria-label="Switch colour theme"><Icon name="sun" /><Icon name="moon" /></button>
-        <button class="btn primary" type="button" data-waitlist="general">Join waitlist</button>
+        <button class="btn primary" type="button" data-waitlist="general">Join the waitlist</button>
       </div>
     </nav>
   </div>

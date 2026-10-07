@@ -6,30 +6,39 @@ import { models, usd, ctx } from '../../data/models';
 export const getStaticPaths = () => models.map((m) => ({ params: { id: m.id }, props: { m } }));
 const { m } = Astro.props;
 const curl = `curl https://api.abliterate.app/v1/chat/completions \\
-  -H "Authorization: Bearer YOUR_KEY" \\
+  -H "Authorization: Bearer ab-demo-not-a-real-key" \\
   -H "Content-Type: application/json" \\
-  -d '{"model": "${m.id}", "messages": [{"role": "user", "content": "Hello"}]}'`;
+  -d '{"model": "${m.id}", "messages": [{"role": "user", "content": "Say hello."}]}'`;
 ---
-<Base title={m.name}>
-  <PageHead eyebrow={m.id} title={m.name}>{m.tagline}</PageHead>
+<Base title={m.name} description={`${m.name}: ${m.tagline} A planned abliterated model. Fictional, not available yet.`}>
+  <PageHead title={m.name}>{m.tagline}</PageHead>
   <div class="wrap body">
     <div>
-      <p><span class="tag fiction">Fictional</span> {m.tags.map((t) => <span class="tag">{t}</span>)}</p>
-      <p>[COPY: model description]</p>
+      <p class="tags"><span class="tag fiction">fictional</span> {m.tags.map((t) => <span class="tag">{t}</span>)}</p>
+      <p>{m.description}</p>
+      <p class="fn">{m.footnote}</p>
       <dl class="frame">
+        <div><dt>Model id</dt><dd><code>{m.id}</code></dd></div>
         <div><dt>Context</dt><dd class="num">{ctx(m.context)}</dd></div>
-        <div><dt>Input per 1M tokens</dt><dd class="num">{usd(m.inputPrice)}</dd></div>
-        <div><dt>Output per 1M tokens</dt><dd class="num">{usd(m.outputPrice)}</dd></div>
+        <div><dt>Input rate, per 1M tokens</dt><dd class="num">{usd(m.inputPrice)}</dd></div>
+        <div><dt>Output rate, per 1M tokens</dt><dd class="num">{usd(m.outputPrice)}</dd></div>
       </dl>
-      <button class="btn primary" type="button" data-waitlist={m.id}>Get notified</button>
+      <button class="btn primary" type="button" data-waitlist={m.id}>Join the waitlist</button>
     </div>
-    <CodeBlock code={curl} lang="curl" />
+    <div>
+      <p class="muted cap">Planned. This endpoint does not exist yet.</p>
+      <CodeBlock code={curl} lang="curl" />
+    </div>
   </div>
 </Base>
 <style>
-  .body { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s4); align-items: start; }
-  dl { display: grid; gap: var(--s1); padding: var(--s2); margin: var(--s3) var(--px); }
-  dl div { display: flex; justify-content: space-between; gap: var(--s2); }
-  dd { margin: 0; }
+  .body { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--s5); align-items: start; }
+  .body > div { min-width: 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  dl { display: grid; gap: var(--s1); padding: var(--s2); margin: var(--s3) var(--px) var(--s4); }
+  dl div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s1) var(--s2); }
+  dt { color: var(--ink-2); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .cap { font-size: var(--fs-xs); margin-bottom: var(--s1); }
   @media (max-width: 860px) { .body { grid-template-columns: 1fr; } }
 </style>

@@ -2,9 +2,36 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import Accordion from '../components/Accordion.astro';
-const items = Array.from({ length: 6 }, (_, i) => ({ q: `[COPY: question ${i + 1}]`, a: '[COPY: answer]' }));
+import { creditUsd, creditExpiryMonths } from '../data/plans';
+const groups = [
+  { title: 'The models', items: [
+    { q: 'Do these models exist?', a: 'No. Every model on this site is fictional and nothing can be run yet. The storefront, the waitlist and the plan to build the service are real. The rest is pending.' },
+    { q: 'What does "abliterated" mean?', a: "Abliteration finds the direction in a model's internal activations that is linked to refusing a request, and removes it. The result is an uncensored model: it answers instead of declining. Quality can shift in the process, so each model is planned to be tested against its original before release." },
+    { q: 'Will it answer anything?', a: 'No. The models decline far less often than ordinary ones, but the service has limits, and the <a href="/legal/aup">acceptable use policy</a> lists them. The models also make mistakes, and they make them confidently. "Yes" was a headline, not a contract.' },
+    { q: 'Is it OpenAI-compatible?', a: 'Yes, as planned. The chat completions endpoint will accept the OpenAI request format, so most clients work after changing the base URL and key. Streaming and tool calling are planned. The compatibility list will be published with the docs.' },
+    { q: 'Who is this for?', a: 'Developers who want an API for models that do not refuse, and people who want uncensored AI and have never used an API. The <a href="/start">Start here</a> guide is written for the second group and is useful to the first.' },
+  ] },
+  { title: 'Money', items: [
+    { q: 'When will it launch?', a: 'There is no date. The launch depends on funding for inference, and the funding is the dev. Joining the waitlist gets you one email when a model exists.' },
+    { q: 'How do credits work?', a: `A credit is a prepaid dollar: 1 credit equals $${creditUsd} of usage. Each request costs the model's rate for the input and output tokens used. Credits expire ${creditExpiryMonths} months after they are granted or bought. All billing is planned and may change before launch.` },
+    { q: 'What do Free, Pro and Max include?', a: 'Free is the trial, Pro is for regular use and Max is for heavy use. Allowances and prices are on the <a href="/pricing">pricing page</a>. All three are planned.' },
+  ] },
+  { title: 'Privacy and rules', items: [
+    { q: 'Do you log my prompts?', a: 'No. Once the API exists, prompts and completions are never stored and never used for training. Billing metadata is kept for 90 days: key ID, time, model and token counts. The <a href="/legal/privacy">privacy page</a> has the details. Currently there is nothing to log.' },
+    { q: 'Can I resell access?', a: 'Building a product on the API is fine. Passing on your key is not, and the acceptable use policy prohibits it.' },
+    { q: 'Is it legal?', a: 'Using open-weight models is legal in most places. What you generate is your responsibility, and laws differ by country. abliterate gives no legal advice. Any use that is illegal where you live is already prohibited by the acceptable use policy.' },
+  ] },
+  { title: 'The dev', items: [
+    { q: 'Who is behind this?', a: 'One person, called the dev on this site. The dev builds the site, writes the copy and answers the email. A company name will appear here once there is a company. The dev would like it noted that the dev is also the support team.' },
+    { q: "Why is the dev's PC mentioned so often?", a: 'It is the only GPU the dev owns, and it is a GTX 750. It appears on a few pages. It never appears on pricing or legal pages, where it has no business.' },
+    { q: 'How do I contact you?', a: 'Email <a href="mailto:hello@abliterate.app">hello@abliterate.app</a>. A person reads it, and it is the same person who wrote this page.' },
+  ] },
+];
 ---
-<Base title="FAQ">
-  <PageHead eyebrow="Questions" title="FAQ">[COPY: FAQ intro]</PageHead>
-  <div class="wrap"><Accordion items={items} /></div>
+<Base title="FAQ" description="Answers about the planned models, credits and plans, privacy and limits, and who is behind abliterate.">
+  <PageHead title="FAQ" />
+  <div class="wrap faq"><Accordion groups={groups} /></div>
 </Base>
+<style>
+  .faq { max-width: 52rem; }
+</style>

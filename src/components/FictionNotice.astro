@@ -1,15 +1,16 @@
 ---
-// Required on every page while the models are fictional (AGENTS.md). Copy is deadpan; see dialogue.md.
+// Required on every page while the models are fictional (AGENTS.md). Identical everywhere; never edited (voice skill).
 ---
-<div class="notice" role="note">
+<div class="notice" role="note" aria-label="Notice">
   <div class="wrap">
-    <span class="tag fiction">Notice</span>
-    <p>[COPY: deadpan notice. The models listed here are fictional. No model is available yet.]</p>
+    <span class="tag">Notice</span>
+    <p>Every model listed here is fictional and nothing can be run yet. Prices are planned. The waitlist is the only part that works.</p>
   </div>
 </div>
 <style>
-  .notice { background: var(--redact); color: var(--paper); font-size: var(--fs-s); }
+  .notice { background: var(--redact); color: var(--paper); font-size: var(--fs-xs); }
   .notice .wrap { display: flex; gap: var(--s2); align-items: center; padding-block: var(--s1); }
-  .notice p { margin: 0; }
-  .notice .tag { border-color: var(--paper); background: transparent; color: var(--paper); flex: none; }
+  .notice p { margin: 0; max-width: none; }
+  .notice .tag { border-color: var(--action); color: var(--action); flex: none; }
+  @media (max-width: 600px) { .notice .tag { display: none; } }
 </style>

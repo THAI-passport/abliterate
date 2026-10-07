@@ -1,8 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
 ---
-<Base title="Not found">
-  <PageHead eyebrow="404" title="This page was abliterated">[COPY: 404 line]</PageHead>
-  <div class="wrap"><a class="btn" href="/">Back home</a></div>
+<Base title="Page not found">
+  <section class="wrap nf">
+    <h1>404</h1>
+    <p class="lead">This page is <span class="redact">missing</span>. The models do not exist either, but they have pages, which do.</p>
+    <a class="btn" href="/">Go to the home page</a>
+  </section>
 </Base>
+<style>
+  .nf { padding-block: var(--s6); }
+  .lead { font-size: var(--fs-l); line-height: 1.45; }
+</style>

@@ -10,15 +10,15 @@ import Footer from '../components/Footer.astro';
 import FictionNotice from '../components/FictionNotice.astro';
 import WaitlistDialog from '../components/WaitlistDialog.astro';
 interface Props { title: string; description?: string }
-const { title, description = '[COPY: meta description]' } = Astro.props;
+const { title, description } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title === 'abliterate' ? title : `${title} | abliterate`}</title>
-    <meta name="description" content={description} />
+    <title>{title.includes('|') ? title : `${title} | abliterate`}</title>
+    {description && <meta name="description" content={description} />}
     <link rel="icon" type="image/png" sizes="32x32" href="/img/mark-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/img/mark-16.png" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />

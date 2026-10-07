@@ -4,31 +4,53 @@ import PageHead from '../../components/PageHead.astro';
 import ModelCard from '../../components/ModelCard.astro';
 import Icon from '../../components/Icon.astro';
 import { models } from '../../data/models';
+const tags = ['fast', 'chat', 'reasoning', 'roleplay', 'code', 'writing', 'flagship'];
 ---
-<Base title="Models">
-  <PageHead eyebrow="Catalogue" title="Models">[COPY: catalogue intro]</PageHead>
+<Base title="Models" description="Six planned abliterated models from small and fast to large and expensive. All fictional, none available yet.">
+  <PageHead title="Models">Six models, from small and fast to large and expensive. All six are fictional and will be renamed. Rates are per 1M tokens and are on the <a href="/pricing">pricing page</a>.</PageHead>
   <div class="wrap">
-    <label class="search frame"><Icon name="search" /><span class="visually-hidden">Filter models</span>
-      <input type="search" placeholder="Filter by name or tag" id="filter" />
-    </label>
-    <div class="grid" id="list">{models.map((m) => <div data-q={`${m.id} ${m.tags.join(' ')}`.toLowerCase()}><ModelCard model={m} /></div>)}</div>
-    <p id="empty" class="muted" hidden>[COPY: no matches]</p>
+    <div class="tools">
+      <label class="search frame"><Icon name="search" /><span class="visually-hidden">Search models</span>
+        <input type="search" placeholder="Search models" id="filter" />
+      </label>
+      <div class="tags" role="group" aria-label="Filter tags">
+        {tags.map((t) => <button class="chip" type="button" aria-pressed="false" data-tag={t}>{t}</button>)}
+      </div>
+    </div>
+    <div class="grid" id="list">{models.map((m) => <div data-q={`${m.id} ${m.name} ${m.tags.join(' ')}`.toLowerCase()} data-tags={m.tags.join(' ')}><ModelCard model={m} /></div>)}</div>
+    <p id="empty" class="muted" hidden>No model matches that search. There are only six, so the check was quick.</p>
   </div>
 </Base>
 <style>
-  .search { display: flex; align-items: center; gap: var(--s1); padding: 0 var(--s2); margin-bottom: var(--s3); max-width: 28rem; }
-  .search input { flex: 1; min-height: var(--touch); border: 0; background: transparent; color: var(--ink); font: inherit; }
+  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); margin-bottom: var(--s4); }
+  .search { display: flex; align-items: center; gap: var(--s1); padding: 0 var(--s2); flex: 1 1 16rem; max-width: 24rem; }
+  .search input { flex: 1; min-width: 0; min-height: var(--touch); border: 0; background: transparent; color: var(--ink); font: inherit; }
   .search input:focus { outline: none; }
   .search:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .chip { min-height: var(--touch); padding: 0 var(--s2); font: var(--fs-xs) var(--f-display); text-transform: uppercase; background: var(--paper); color: var(--ink); border: 2px solid var(--line); cursor: pointer; }
+  .chip:hover { background: var(--paper-2); }
+  .chip[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
   #list > div { display: grid; }
 </style>
 <script>
   const f = document.getElementById('filter') as HTMLInputElement;
   const items = [...document.querySelectorAll<HTMLElement>('#list > div')];
-  f.addEventListener('input', () => {
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+  let tag = '';
+  const apply = () => {
     const q = f.value.trim().toLowerCase();
     let n = 0;
-    items.forEach((i) => { const hit = i.dataset.q!.includes(q); i.hidden = !hit; n += +hit; });
+    items.forEach((i) => {
+      const hit = i.dataset.q!.includes(q) && (!tag || i.dataset.tags!.split(' ').includes(tag));
+      i.hidden = !hit; n += +hit;
+    });
     document.getElementById('empty')!.hidden = n > 0;
-  });
+  };
+  f.addEventListener('input', apply);
+  chips.forEach((c) => c.addEventListener('click', () => {
+    tag = tag === c.dataset.tag ? '' : c.dataset.tag!;
+    chips.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.tag === tag)));
+    apply();
+  }));
 </script>

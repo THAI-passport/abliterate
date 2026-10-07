@@ -1,5 +1,6 @@
 ---
-// One in-page dialog for every "join" button; [data-waitlist="<plan>"] opens it tagged with that plan.
+// One in-page dialog for every "join" button. [data-waitlist] opens it; [data-plan-name] adds the plan line.
+// Copy: dialogue.md, "Waitlist dialog". The plan is shown, never sent (P4).
 import Icon from './Icon.astro';
 import PixelIcon from './PixelIcon.astro';
 ---
@@ -8,17 +9,19 @@ import PixelIcon from './PixelIcon.astro';
     <button class="btn close" type="button" aria-label="Close" data-close><Icon name="x" /></button>
     <PixelIcon name="envelope" scale={3} />
     <h2 id="wl-title">Join the waitlist</h2>
-    <p class="muted">[COPY: waitlist pitch] <span class="plan-line" hidden>Plan: <strong class="plan-name"></strong></span></p>
-    <label for="wl-email">Email</label>
-    <input id="wl-email" name="email" type="email" autocomplete="email" required />
-    <input type="hidden" name="plan" />
-    <p class="err" role="alert"></p>
-    <button class="btn primary" type="submit"><Icon name="mail" />Join</button>
-    <p class="muted small">[COPY: double opt-in and privacy line]</p>
+    <p class="muted">One email to confirm your address, and one when a model exists. Both have an unsubscribe link.</p>
+    <p class="plan-line" hidden>Joining for: <strong class="plan-name"></strong></p>
+    <label for="wl-email">Email address</label>
+    <input id="wl-email" name="email" type="email" autocomplete="email" required aria-describedby="wl-err" />
+    <p class="err" id="wl-err" role="alert"></p>
+    <p class="muted small">By joining you agree that abliterate stores your email address and the time you agreed, to send you the emails above. See the <a href="/legal/privacy">privacy page</a>.</p>
+    <button class="btn primary submit" type="submit"><Icon name="mail" /><span class="submit-label">Join the waitlist</span></button>
+    <p class="muted small">The second email may take a while.</p>
   </form>
   <div class="body done" hidden>
-    <h2>Check your inbox</h2>
-    <p>[COPY: confirmation sent]</p>
+    <button class="btn close" type="button" aria-label="Close" data-close><Icon name="x" /></button>
+    <PixelIcon name="envelope" scale={3} />
+    <p class="done-text" role="status">You are on the list once you confirm. Check your inbox for the confirmation email. After that you will get one email, when a model exists. Do not wait up.</p>
     <button class="btn" type="button" data-close>Close</button>
   </div>
 </dialog>
@@ -26,38 +29,54 @@ import PixelIcon from './PixelIcon.astro';
   .wl { border: 0; padding: 0; width: min(28rem, calc(100vw - 2rem)); color: var(--ink); }
   .wl::backdrop { background: color-mix(in srgb, var(--redact) 70%, transparent); }
   .body { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s1); position: relative; }
+  .body[hidden] { display: none; }
+  .body > p { margin: 0; }
+  .body h2 { font-size: var(--fs-l); margin: var(--s1) 0 0; }
   .close { position: absolute; top: var(--s1); right: var(--s1); padding: 0 var(--s1); box-shadow: none; }
-  label { font-family: var(--f-pixel); }
+  label { font-family: var(--f-pixel); margin-top: var(--s1); }
   input[type='email'] { min-height: var(--touch); font: inherit; padding: 0 var(--s1); background: var(--paper); color: var(--ink); border: 2px solid var(--line); border-radius: 0; }
-  .err { color: var(--action); min-height: 1.5em; margin: 0; }
+  .err { color: var(--action); min-height: 1.5em; }
+  .err:empty { min-height: 0; }
+  .submit { margin-top: var(--s1); }
+  .done-text { margin-top: var(--s1) !important; font-size: var(--fs-l); line-height: 1.45; }
   .small { font-size: var(--fs-xs); }
 </style>
 <script>
+  const ERR: Record<string, string> = {
+    invalid: 'That email address does not look right. Check it and try again.',
+    network: 'The request did not go through. Check your connection and try again in a minute.',
+    exists: 'That address is already on the list.',
+    unconfirmed: 'That address is waiting for confirmation. Check your inbox, and the spam folder.',
+    server: 'Something failed on the server. Try again in a minute.',
+  };
   const dlg = document.querySelector<HTMLDialogElement>('.wl')!;
   const form = dlg.querySelector('form')!;
   const done = dlg.querySelector<HTMLElement>('.done')!;
   const err = dlg.querySelector<HTMLElement>('.err')!;
+  const input = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+  const fail = (code: string) => { err.textContent = ERR[code] ?? ERR.server; input.setAttribute('aria-invalid', 'true'); };
   document.addEventListener('click', (e) => {
     const t = (e.target as HTMLElement).closest<HTMLElement>('[data-waitlist]');
     if (!t) return;
-    const plan = t.dataset.waitlist!;
-    form.plan.value = plan;
-    const line = dlg.querySelector<HTMLElement>('.plan-line')!;
-    line.hidden = plan === 'general';
+    const plan = t.dataset.planName ?? '';
+    dlg.querySelector<HTMLElement>('.plan-line')!.hidden = !plan;
     dlg.querySelector('.plan-name')!.textContent = plan;
-    form.hidden = false; done.hidden = true; err.textContent = '';
+    dlg.querySelector('.submit-label')!.textContent = plan ? `Join the waitlist for ${plan}` : 'Join the waitlist';
+    form.hidden = false; done.hidden = true; err.textContent = ''; input.removeAttribute('aria-invalid');
     dlg.showModal();
   });
   dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form.email.checkValidity()) { err.textContent = 'Enter a valid email address.'; return; }
-    err.textContent = '';
+    if (!input.checkValidity() || !input.value.trim()) return fail('invalid');
+    err.textContent = ''; input.removeAttribute('aria-invalid');
+    let r: Response;
     try {
-      const r = await fetch('/api/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: form.email.value, plan: form.plan.value, source: location.pathname }) });
-      if (!r.ok) throw new Error();
-      form.hidden = true; done.hidden = false;
-    } catch { err.textContent = 'That did not go through. Try again in a moment.'; }
+      r = await fetch('/api/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email: input.value.trim() }) });
+    } catch { return fail('network'); }
+    if (r.ok) { form.hidden = true; done.hidden = false; done.querySelector<HTMLElement>('[data-close]')?.focus(); return; }
+    const body = await r.json().catch(() => ({}));
+    fail(body.error ?? 'server');
   });
 </script>

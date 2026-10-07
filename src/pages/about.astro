@@ -2,9 +2,37 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 ---
-<Base title="From the dev">
-  <PageHead eyebrow="About" title="From the dev">[COPY: From the dev intro]</PageHead>
-  <article class="wrap prose">
-    <p>[COPY: the founder story, in the dev voice]</p>
-  </article>
+<Base title="From the dev" description="What abliterate is, who runs it, and which parts of this site are real.">
+  <PageHead title="From the dev" />
+  <div class="wrap layout">
+    <article class="prose">
+      <p>abliterate is a storefront for a service that does not exist yet. I am building the storefront first because it is the part I can build on the hardware I have.</p>
+      <p>The plan is real. Once I can afford GPUs or rented inference, I will sell API access to abliterated open-weight models, billed in credits or by subscription. The six models on this site are placeholders. Their names and prices will change.</p>
+      <p>I am one person. I write the site and the copy, and I answer the email. The GPU in the picture is a GTX 750 with one fan. It has opinions about temperature, and my landlord has opinions about the heating. Neither has been consulted on pricing.</p>
+      <p>The logo is an a with the top redacted. At some sizes it reads as an e. I have chosen not to discuss this.</p>
+      <p>I do not log prompts. The <a href="/legal/privacy">privacy page</a> says so in more detail, and it is the part of this site I would defend first.</p>
+      <p>If you want to know when a model exists, join the waitlist. You will get one email.</p>
+      <p class="sig">The dev</p>
+      <div class="real">
+        <div class="frame col"><h2>Real</h2><ul><li>The storefront.</li><li>The waitlist and its double opt-in.</li><li>The plan to sell tokens.</li><li>The no-logging pledge.</li><li>hello@abliterate.app.</li></ul></div>
+        <div class="frame col"><h2>Not real</h2><ul><li>The six models.</li><li>The prices, which are planned.</li><li>The quotes.</li><li>The incident log.</li><li>The GPU and the landlord.</li></ul></div>
+      </div>
+      <button class="btn primary" type="button" data-waitlist="general">Join the waitlist</button>
+    </article>
+    <figure class="card">
+      <div class="frame art"><img class="pixel-img" src="/img/gtx-hero.png" width="72" height="44" alt="A small single-fan graphics card." /></div>
+    </figure>
+  </div>
 </Base>
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--s5); align-items: start; }
+  .sig { font-family: var(--f-pixel); }
+  .real { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--s3); margin: var(--s4) 0; }
+  .col { padding: var(--s3); }
+  .col h2 { font-size: var(--fs-l); margin: 0 0 var(--s1); }
+  .col ul { margin: 0; }
+  .card { margin: 0; position: sticky; top: var(--s3); }
+  .art { padding: var(--s3); background: var(--paper-2); }
+  .art img { width: 100%; height: auto; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .card { position: static; max-width: 16rem; grid-row: 1; } }
+</style>

@@ -1,21 +1,31 @@
 ---
-// <details> is in-page and keyboard friendly; no native pop-up involved.
-interface Props { items: { q: string; a: string }[] }
-const { items } = Astro.props;
+// <details> is in-page and keyboard friendly; no native pop-up involved. Answers may hold links (HTML).
+interface Props { groups: { title: string; items: { q: string; a: string }[] }[] }
+const { groups } = Astro.props;
 import Icon from './Icon.astro';
 ---
 <div class="acc">
-  {items.map((i) => (
-    <details class="frame">
-      <summary><span>{i.q}</span><Icon name="chevron-down" /></summary>
-      <p>{i.a}</p>
-    </details>
+  {groups.map((g) => (
+    <section>
+      <h2>{g.title}</h2>
+      <div class="items">
+        {g.items.map((i) => (
+          <details class="frame">
+            <summary><span>{i.q}</span><Icon name="chevron-down" /></summary>
+            <p set:html={i.a} />
+          </details>
+        ))}
+      </div>
+    </section>
   ))}
 </div>
 <style>
-  .acc { display: grid; gap: var(--s2); }
-  summary { min-height: var(--touch); display: flex; justify-content: space-between; align-items: center; gap: var(--s2); padding: var(--s1) var(--s2); cursor: pointer; font-family: var(--f-pixel); list-style: none; }
+  .acc { display: grid; gap: var(--s5); }
+  h2 { font-size: var(--fs-l); }
+  .items { display: grid; gap: var(--s2); }
+  summary { min-height: var(--touch); display: flex; justify-content: space-between; align-items: center; gap: var(--s2); padding: var(--s1) var(--s2); cursor: pointer; font-family: var(--f-pixel); font-size: var(--fs-m); list-style: none; }
   summary::-webkit-details-marker { display: none; }
+  summary .icon { transition: transform var(--t-fast) var(--step); }
   details[open] summary .icon { transform: rotate(180deg); }
   details p { padding: 0 var(--s2) var(--s2); margin: 0; }
 </style>

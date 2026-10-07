@@ -1,12 +1,72 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import PixelIcon from '../components/PixelIcon.astro';
+import { models } from '../data/models';
+const rows: [string, string][] = [
+  ['Website', 'operational'],
+  ['Waitlist', 'operational'],
+  ['API', 'planned'],
+  ...models.map((m): [string, string] => [m.short, 'not built']),
+];
+const log = [
+  ['2026-10-08', 'monitoring', 'The fan is spinning. There is one fan. I am monitoring it.'],
+  ['2026-10-06', 'resolved', 'The GPU reached 84 C during a test of one prompt. I opened the window. The landlord asked whether the heating was on.'],
+  ['2026-10-03', 'resolved', 'The waitlist form went live. No incidents. I am also surprised.'],
+];
 ---
-<Base title="Status">
-  <PageHead eyebrow="System status" title="Status">[COPY: Status intro]</PageHead>
-  <article class="wrap prose">
-    <p><PixelIcon name="status" scale={3} /> <span class="tag">[COPY: overall state]</span></p>
-    <p>[COPY: status in the dev voice: honest, nothing is running yet]</p>
-  </article>
+<Base title="Status" description="What is running at abliterate: the website and the waitlist. The API and the models are planned.">
+  <PageHead title="Status">What is running, as reported by the person running it. The component table is accurate. The incident log is the dev's.</PageHead>
+  <section class="wrap">
+    <div class="frame table">
+      <table>
+        <thead><tr><th scope="col">Component</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          {rows.map(([c, s]) => (
+            <tr><th scope="row">{c}</th><td><span class={`st st-${s.replace(' ', '-')}`}>{s}</span></td></tr>
+          ))}
+          <tr class="gpu">
+            <th scope="row">
+              <span class="gpu-cell">
+                <img class="pixel-img" src="/img/gtx-hero.png" width="72" height="44" alt="A small single-fan graphics card." />
+                <span>Dev's GPU (GTX <span class="redact">750</span>, 1 fan)</span>
+              </span>
+            </th>
+            <td><span class="st st-degraded">degraded</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="uptime">API uptime, last 90 days: <span class="num">100%</span>.*</p>
+    <p class="fn">*Nothing was running.</p>
+  </section>
+  <section class="wrap section">
+    <h2>Incident log</h2>
+    <ol class="log">
+      {log.map(([d, s, t]) => (
+        <li><p class="meta"><span class="num">{d}</span> <span class="tag">{s}</span></p><p>{t}</p></li>
+      ))}
+    </ol>
+  </section>
 </Base>
+<style>
+  .table { max-width: 40rem; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: var(--s1) var(--s2); border-bottom: 2px solid var(--paper-2); }
+  thead th { font: var(--fs-xs) var(--f-display); text-transform: uppercase; border-bottom-color: var(--line); }
+  tbody th { font-weight: 400; font-family: var(--f-mono); font-size: var(--fs-s); }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  .gpu th { font-family: var(--f-body); font-size: var(--fs-m); }
+  .gpu-cell { display: flex; align-items: center; gap: var(--s2); }
+  .gpu-cell img { width: 72px; height: auto; flex: none; }
+  .st { font-family: var(--f-pixel); white-space: nowrap; }
+  .st::before { content: ''; display: inline-block; width: 0.6em; height: 0.6em; margin-right: 0.5em; background: currentColor; }
+  .st-operational { color: var(--ok); }
+  .st-degraded { color: var(--action); }
+  .st-planned, .st-not-built { color: var(--ink-2); }
+  .uptime { margin-top: var(--s3); margin-bottom: 0; }
+  .log { list-style: none; padding: 0; display: grid; gap: var(--s3); max-width: 44rem; }
+  .log li { border-left: var(--px) solid var(--line); padding-left: var(--s2); }
+  .log p { margin: 0; }
+  .meta { display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s1) !important; }
+  @media (max-width: 480px) { .gpu-cell { flex-direction: column; align-items: start; } }
+</style>

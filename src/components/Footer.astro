@@ -4,12 +4,12 @@ import Logo from './Logo.astro';
 ---
 <footer class="foot">
   <div class="wrap cols">
-    <div><Logo /><p class="muted">[COPY: one-line footer tagline]</p></div>
+    <div><Logo /><p class="muted">abliterate is a storefront for models that do not exist yet.</p><p class="muted"><a href="mailto:hello@abliterate.app">hello@abliterate.app</a></p></div>
     {footer.map((c) => (
       <div><p class="eyebrow">{c.title}</p><ul>{c.links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}</ul></div>
     ))}
   </div>
-  <div class="wrap muted small">[COPY: company details] &middot; {new Date().getFullYear()}</div>
+  <div class="wrap muted small">abliterate &middot; {new Date().getFullYear()}</div>
 </footer>
 <style>
   .foot { border-top: 2px solid var(--line); padding: var(--s4) 0 var(--s3); margin-top: var(--s5); }

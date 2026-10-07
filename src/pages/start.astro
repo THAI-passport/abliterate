@@ -2,30 +2,69 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import CodeBlock from '../components/CodeBlock.astro';
-import { models } from '../data/models';
+const curl = `curl https://api.abliterate.app/v1/chat/completions \\
+  -H "Authorization: Bearer ab-demo-not-a-real-key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"model": "abliterate-sonny-v2.5", "messages": [{"role": "user", "content": "Say hello."}]}'`;
 const steps = [
-  { t: '[COPY: What an API is]', b: '[COPY: plain-language explanation]' },
-  { t: '[COPY: Get your key]', b: '[COPY: key steps, once accounts exist]' },
-  { t: '[COPY: Your first request]', b: '[COPY: run this]', code: `curl https://api.abliterate.app/v1/chat/completions -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" -d '{"model": "${models[0].id}", "messages": [{"role": "user", "content": "Hello"}]}'`, lang: 'curl' },
-  { t: '[COPY: The same in Python]', b: '[COPY: install, then run]', code: `pip install openai`, lang: 'shell' },
-  { t: '[COPY: Use it in an app]', b: '[COPY: SillyTavern, Open WebUI: base URL + key]' },
+  { t: 'What an API is', b: ['An API is a counter you order from. You send a request, such as a question. The service sends back a response, such as an answer. A chat app does this for you. With an API you do it yourself, or you let another app do it for you.'], see: 'nothing. This step is vocabulary.' },
+  { t: 'Join the waitlist and get a key', b: ['<button class="linkish" type="button" data-waitlist="general">Join the waitlist</button>. When a model exists, you will get an email with a link to create an account and a key. A key is a long string of characters that says who is asking and who gets billed.'], see: 'an email, and a key that starts with <code>ab-</code>.' },
+  { t: 'Keep the key private', b: ['Treat the key like a password. Do not post it, commit it to a public repository or send it to anyone. If it leaks, delete it in your account and make a new one. Anyone with your key spends your credits.'], see: 'the key in a password manager or an environment variable, and nowhere else.' },
+  { t: 'Send a first request with curl', b: ['curl is a command-line tool that sends requests. It comes with macOS, most Linux systems and recent Windows.'], code: curl, lang: 'curl', see: 'a block of text. The reply is under <code>choices</code>, then <code>message</code>, then <code>content</code>.' },
+  { t: 'Do the same in Python', b: ['Install the library with <code>pip install openai</code>, then run the <a href="/#sample">sample from the home page</a> with your own key.'], see: 'the reply, printed in your terminal.' },
+  { t: 'Connect an app', b: ['SillyTavern and Open WebUI both accept a custom OpenAI-compatible endpoint. In the connection settings choose the OpenAI-compatible option, paste <code>https://api.abliterate.app/v1</code> as the base URL, add your key and pick a model id such as <code>abliterate-sonny-v2.5</code>.'], see: "the model in the app's model list, answering when you type to it." },
+];
+const errors = [
+  ['401', 'the key is missing or wrong. Check it.'],
+  ['402', 'you are out of credits. Top up.'],
+  ['404', 'the model id is misspelled. Copy it from the <a href="/models">models page</a>.'],
+  ['429', 'too many requests. Wait a moment and try again.'],
+  ['5xx', 'a problem on the service side. Try again in a minute, then check the <a href="/status">status page</a>.'],
 ];
 ---
-<Base title="Start here">
-  <PageHead eyebrow="For beginners" title="Start here">[COPY: no experience needed]</PageHead>
+<Base title="Start here" description="A guide for people who have never used an API: what it is, how to get a key, and how to send a first request. Planned: nothing here works yet.">
+  <PageHead title="Start here">This guide is for people who have never used an API. Every step is planned: the API does not exist yet, so nothing here works today. It will read the same when it does.</PageHead>
   <ol class="wrap steps">
     {steps.map((s, i) => (
       <li class="frame">
-        <span class="n num">{i + 1}</span>
-        <div><h2>{s.t}</h2><p>{s.b}</p>{s.code && <CodeBlock code={s.code} lang={s.lang} />}</div>
+        <span class="n num" aria-hidden="true">{i + 1}</span>
+        <div>
+          <div class="h"><h2>{s.t}</h2><span class="tag">planned</span></div>
+          {s.b.map((b) => <p set:html={b} />)}
+          {s.code && <CodeBlock code={s.code} lang={s.lang} />}
+          <p class="see"><strong>What you should see:</strong> <span set:html={s.see} /></p>
+        </div>
       </li>
     ))}
+    <li class="frame">
+      <span class="n num" aria-hidden="true">7</span>
+      <div>
+        <div class="h"><h2>When something goes wrong</h2><span class="tag">planned</span></div>
+        <dl class="errs">{errors.map(([c, t]) => <div><dt class="num">{c}</dt><dd set:html={t} /></div>)}</dl>
+        <p>If every request fails and the status page says the API is planned, that is why.</p>
+      </div>
+    </li>
   </ol>
+  <section class="wrap section">
+    <div class="cta frame">
+      <h2>Join the waitlist.</h2>
+      <p class="muted">One email to confirm, one when a model exists. The second may take a while.</p>
+      <button class="btn primary" type="button" data-waitlist="general">Join the waitlist</button>
+    </div>
+  </section>
 </Base>
 <style>
-  .steps { list-style: none; display: grid; gap: var(--s3); }
-  li { display: grid; grid-template-columns: auto 1fr; gap: var(--s2); padding: var(--s3); min-width: 0; }
-  li > div { min-width: 0; }
+  .steps { list-style: none; display: grid; gap: var(--s4); margin: 0 auto; padding-top: var(--s2); }
+  .steps > li { display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--s2); padding: var(--s3); min-width: 0; }
+  .steps > li > div { min-width: 0; }
   .n { font-size: 3rem; color: var(--action); }
-  h2 { font-size: var(--fs-l); }
+  .h { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s2); margin-bottom: var(--s2); }
+  .h h2 { font-size: var(--fs-l); margin: 0; }
+  .see { margin-top: var(--s2); padding-top: var(--s2); border-top: 2px solid var(--paper-2); }
+  .see strong { font-family: var(--f-pixel); font-weight: 400; }
+  .errs { display: grid; gap: var(--s1); margin: 0 0 var(--s2); }
+  .errs div { display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--s2); }
+  .errs dd { margin: 0; }
+  .cta { text-align: center; padding: var(--s5) var(--s3); display: grid; justify-items: center; }
+  @media (max-width: 600px) { .steps > li { grid-template-columns: 1fr; } .n { font-size: 2rem; } }
 </style>

@@ -99,3 +99,13 @@ Devices, in order of preference: absurd precision ("14% of a world map, in a spr
 ## Where the copy lives
 
 The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credits, context, plan features, model taglines) go into `src/data/*.ts` only, and pages render from them.
+
+## Build decisions (2026-10-08, copy poured into `src/`)
+
+- Placeholders: `npm run build` fails if any `[COPY:` reaches `dist/`. `[CONFIRM: ...]` markers stay visible on purpose until the owner supplies the fact (list in `problem_solution.md`, P9).
+- Prose renders every price number from `src/data/plans.ts` (`creditUsd`, `topUps`, `creditExpiryMonths`, plan prices); nothing is typed into a page twice.
+- The waitlist sends only the email. The plan the dialog was opened from is shown ("Joining for: Pro") but not sent, until P4 is decided.
+- The function tells the page which of the five copy errors to show: `invalid`, `exists`, `unconfirmed`, `server`; `network` is decided in the browser.
+- Pages with no line in `dialogue.md` got none: the scaffold's eyebrows ("Catalogue", "Legal") and the waitlist success heading are gone. Model detail pages had no meta description in the copy; it is built from data: "{name}: {tagline} A planned abliterated model. Fictional, not available yet."
+- Section rhythm: `.section` sets block padding only, so `.wrap` keeps the 16 px side gutter at 375 px.
+- Redaction bar: exactly two on the site, 404 ("missing") and Status ("750"). In forced-colors mode the word shows, outlined; in print the bar prints as a bar.

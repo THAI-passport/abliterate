@@ -2,87 +2,154 @@
 import Base from '../layouts/Base.astro';
 import ModelCard from '../components/ModelCard.astro';
 import CodeBlock from '../components/CodeBlock.astro';
-import Aside from '../components/Aside.astro';
-import Icon from '../components/Icon.astro';
 import PixelIcon from '../components/PixelIcon.astro';
+import Icon from '../components/Icon.astro';
 import { models } from '../data/models';
-import { plans } from '../data/plans';
+import { plans, creditUsd, planPrice } from '../data/plans';
+const free = plans.find((p) => p.id === 'free')!;
 const sample = `from openai import OpenAI
 
-client = OpenAI(base_url="https://api.abliterate.app/v1", api_key="YOUR_KEY")
+client = OpenAI(
+    base_url="https://api.abliterate.app/v1",
+    api_key="ab-demo-not-a-real-key",
+)
+
 reply = client.chat.completions.create(
-    model="${models[0].id}",
-    messages=[{"role": "user", "content": "Hello"}],
+    model="abliterate-house-md-v5.2",
+    messages=[{"role": "user", "content": "Summarize this paragraph."}],
 )
 print(reply.choices[0].message.content)`;
+const values = [
+  { icon: 'chip', h: 'Works with the tools you already use.', t: 'The planned endpoint accepts the OpenAI chat completions format. Change the base URL and the key, and keep the rest of your code.' },
+  { icon: 'unlocked', h: 'Models with the refusals removed.', t: 'Abliteration removes the refusal behavior from an open-weight model, so it answers the question you asked. The service still has limits, and they are written down.' },
+  { icon: 'coin', h: 'Pay per token, or subscribe.', t: `Credits are prepaid dollars: 1 credit equals $${creditUsd} of usage. Every model has its own rate. Free, Pro and Max plans are planned.` },
+  { icon: 'envelope', h: 'Nothing you send is kept.', t: 'Once the API exists, prompts and completions are never stored and never used for training. Only billing metadata is kept, for 90 days. The pledge is easier to keep while there is no API.' },
+] as const;
+const trust = [
+  ['No-logging pledge', 'Prompts and completions are never stored.', '/legal/privacy'],
+  ['OpenAI-compatible', 'Same format, new base URL.', '#sample'],
+  ['Acceptable use policy', 'The limits, in writing.', '/legal/aup'],
+  ['Changelog', 'What changed, and when.', '/changelog'],
+  ['Status', 'What is running. Currently, the website.', '/status'],
+  ['Contact', 'A person answers. It is the same person who wrote this page.', 'mailto:hello@abliterate.app'],
+];
+const quotes = [
+  { q: 'Some might say the model is <u>"BASED"</u>.', who: 'A forum post, location unknown.', raw: true },
+  { q: '"I asked it to stop and it asked why."', who: 'A tester who does not exist.' },
+  { q: '"Fast, as far as anyone has measured."', who: 'A benchmark that was not run.' },
+  { q: '"Yes."', who: 'The model, asked whether it would answer.' },
+];
 ---
-<Base title="abliterate">
+<Base title="abliterate | OpenAI-compatible API for abliterated models"
+  description="An API for abliterated, uncensored open-weight models, with credits and subscriptions. Planned: no model is available yet. Join the waitlist.">
   <section class="wrap hero">
-    <div>
-      <p class="eyebrow">[COPY: eyebrow]</p>
-      <h1>[COPY: hero hook, with a <span class="redact">redacted</span> word]</h1>
-      <p class="lead muted">[COPY: hero subline: uncensored models, one OpenAI-compatible API, credits or subscription]</p>
-      <div class="ctas">
-        <button class="btn primary" type="button" data-waitlist="general">Join waitlist <Icon name="arrow-right" /></button>
-        <a class="btn" href="/start">Start here</a>
+    <div class="hero-text">
+      <h1>Models that say yes.</h1>
+      <p class="lead">An OpenAI-compatible API for abliterated models: open-weight models with the refusal behavior removed.</p>
+      <p class="limits">Yes has limits. They are in the <a href="/legal/aup">acceptable use policy</a>.</p>
+      <p class="hype">A world-class, revolutionary model suite, unleashed to supercharge the user experience.*</p>
+      <p class="fn">*None of these models exist yet.</p>
+      <div class="cta-block">
+        <button class="btn primary" type="button" data-waitlist="general">Join the waitlist <Icon name="arrow-right" /></button>
+        <p class="muted small">One email to confirm, one when a model exists. The second may take a while.</p>
       </div>
     </div>
-    <div class="art frame"><img class="pixel-img" src="/img/gtx-hero.png" width="72" height="44" alt="A small single-fan graphics card with its label blacked out" /></div>
+    <figure class="art">
+      <div class="frame art-box"><img class="pixel-img" src="/img/gtx-hero.png" width="72" height="44" alt="A small single-fan graphics card with its label blacked out." /></div>
+      <figcaption class="muted">The dev's GTX 750. The label is redacted. It still says GTX 750.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap section values">
+    {values.map((v) => (
+      <div class="value">
+        <PixelIcon name={v.icon} scale={3} />
+        <h2>{v.h}</h2>
+        <p class="muted">{v.t}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="band" id="sample">
+    <div class="wrap section split">
+      <div>
+        <h2>One base URL</h2>
+        <p class="muted">Planned. This endpoint does not exist yet.</p>
+        <p>Any client that accepts a custom OpenAI base URL can use the same two settings.</p>
+        <a href="/start">Start here</a>
+      </div>
+      <CodeBlock code={sample} lang="python" />
+    </div>
   </section>
 
   <section class="wrap section">
-    <h2>[COPY: value propositions heading]</h2>
-    <div class="grid">
-      {(['unlocked', 'token', 'chip'] as const).map((i) => <div class="frame pad"><PixelIcon name={i} scale={3} /><h3>[COPY: value]</h3><p class="muted">[COPY: value detail]</p></div>)}
+    <div class="head-row"><h2>Six models</h2><a href="/models">See all models</a></div>
+    <p class="muted">From small and fast to large and expensive. Each has its own rate. All six are fictional and will be renamed.</p>
+    <div class="grid">{models.map((m) => <ModelCard model={m} />)}</div>
+  </section>
+
+  <section class="wrap section">
+    <div class="head-row"><h2>What people are saying</h2><span class="tag fiction">fictional quotes</span></div>
+    <div class="quotes">
+      {quotes.map((x) => (
+        <figure class="quote frame">
+          {x.raw ? <blockquote set:html={x.q} /> : <blockquote>{x.q}</blockquote>}
+          <figcaption class="muted">{x.who}</figcaption>
+        </figure>
+      ))}
     </div>
+    <p class="fn">Every quote was invented by the dev, who is also the only person who has read them.</p>
   </section>
 
   <section class="wrap section split">
     <div>
-      <h2>[COPY: drop-in API heading]</h2>
-      <p class="muted">[COPY: OpenAI-compatible, change two lines]</p>
-      <a href="/start">New to APIs? Start here</a>
+      <h2>Pay per token, or subscribe.</h2>
+      <p class="muted">Prices are planned. Rates are listed per model and plans start at <span class="num">{planPrice(free)}</span>.</p>
+      <a class="btn" href="/pricing">See pricing</a>
     </div>
-    <CodeBlock code={sample} lang="python" />
-  </section>
-
-  <section class="wrap section">
-    <div class="head-row"><h2>Models</h2><a href="/models">All models</a></div>
-    <div class="grid">{models.slice(0, 3).map((m) => <ModelCard model={m} />)}</div>
-  </section>
-
-  <section class="wrap section">
-    <div class="head-row"><h2>Pricing</h2><a href="/pricing">Full pricing</a></div>
-    <p class="muted">Credits from <span class="num">${Math.min(...models.map((m) => m.inputPrice)).toFixed(2)}</span> per 1M input tokens, or plans from <span class="num">${plans.find((p) => p.price > 0)!.price}</span>/month. All planned.</p>
-  </section>
-
-  <section class="wrap section">
-    <h2>[COPY: trust heading]</h2>
     <ul class="trust">
-      <li><a href="/legal/privacy">[COPY: no-logging pledge]</a></li>
-      <li><a href="/legal/aup">[COPY: acceptable use]</a></li>
-      <li><a href="/changelog">[COPY: changelog]</a></li>
-      <li><a href="/status">[COPY: status]</a></li>
+      {trust.map(([label, line, href]) => (
+        <li><a href={href}><strong>{label}</strong></a><span class="muted">{line}</span></li>
+      ))}
     </ul>
-    <Aside>[COPY: dev aside]</Aside>
   </section>
 
-  <section class="wrap section cta frame">
-    <h2>[COPY: final CTA]</h2>
-    <button class="btn primary" type="button" data-waitlist="general">Join waitlist</button>
+  <section class="wrap section">
+    <div class="cta frame">
+      <h2>Join the waitlist.</h2>
+      <p class="muted">You will be told once, when a model exists.</p>
+      <button class="btn primary" type="button" data-waitlist="general">Join the waitlist</button>
+    </div>
   </section>
 </Base>
 <style>
-  .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--s4); align-items: center; padding-block: var(--s5); }
-  .lead { font-size: var(--fs-l); }
-  .ctas { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
-  .art { display: grid; place-items: center; padding: var(--s3); background: var(--paper-2); }
+  .hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--s5); align-items: center; padding-block: var(--s6) var(--s5); }
+  .hero h1 { margin-bottom: var(--s3); }
+  .lead { font-size: var(--fs-l); line-height: 1.45; }
+  .limits { font-family: var(--f-pixel); }
+  .hype { color: var(--ink-2); font-style: italic; }
+  .cta-block { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); margin: var(--s3) 0 var(--s2); }
+  .cta-block p { margin: 0; max-width: 22rem; }
+  .small { font-size: var(--fs-xs); }
+  .art { margin: 0; }
+  .art-box { display: grid; place-items: center; padding: var(--s4); background: var(--paper-2); }
   .art img { width: 100%; height: auto; }
-  .pad h3 { margin-top: var(--s2); }
-  .pad { padding: var(--s3); }
-  .split { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s4); align-items: center; }
-  .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
-  .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--s2); list-style: none; padding: 0; }
-  .cta { text-align: center; padding: var(--s4) var(--s2); }
-  @media (max-width: 860px) { .hero, .split { grid-template-columns: 1fr; } }
+  .art figcaption { font-size: var(--fs-xs); margin-top: var(--s2); text-align: center; }
+  .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--s4); border-top: 2px solid var(--line); }
+  .value h2 { font-size: var(--fs-l); font-family: var(--f-pixel); margin: var(--s2) 0 var(--s1); }
+  .band { background: var(--paper-2); }
+  .split { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s5); align-items: center; }
+  .head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s2); margin-bottom: var(--s2); }
+  .head-row h2 { margin: 0; }
+  .head-row a, .split > div > a:not(.btn) { display: inline-flex; align-items: center; min-height: var(--touch); }
+  .quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--s3); margin-bottom: var(--s3); }
+  .quote { margin: var(--px); padding: var(--s3); display: flex; flex-direction: column; justify-content: space-between; gap: var(--s2); }
+  blockquote { margin: 0; font: var(--fs-l)/1.3 var(--f-pixel); }
+  .quote figcaption { font-size: var(--fs-xs); }
+  .trust { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--s3); }
+  .trust li { display: grid; gap: var(--s1); font-size: var(--fs-s); }
+  .trust a { justify-self: start; min-height: var(--touch); display: inline-flex; align-items: center; }
+  .cta { text-align: center; padding: var(--s5) var(--s3); display: grid; justify-items: center; }
+  .cta p { margin-bottom: var(--s3); }
+  @media (max-width: 860px) { .hero, .split { grid-template-columns: 1fr; gap: var(--s4); } .hero { padding-top: var(--s4); } }
 </style>

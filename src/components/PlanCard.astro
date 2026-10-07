@@ -1,19 +1,24 @@
 ---
-import type { Plan } from '../data/plans';
+import { type Plan, planPrice, planStatus } from '../data/plans';
 interface Props { plan: Plan }
 const { plan: p } = Astro.props;
 ---
 <article class={`plan frame ${p.featured ? 'featured' : ''}`}>
-  <div class="head"><h3>{p.name}</h3><span class="tag">Planned</span></div>
-  <p class="price"><span class="num">${p.price}</span><span class="muted">/month</span></p>
-  <p class="muted">{p.credits}</p>
+  <div class="head"><h3>{p.name}</h3><span class="tag">{planStatus}</span></div>
+  <p class="price"><span class="num">{planPrice(p)}</span>{p.price > 0 && <span class="muted"> per month</span>}</p>
+  <p class="line">{p.line}</p>
+  <p class="credits">{p.credits}</p>
   <ul>{p.features.map((f) => <li>{f}</li>)}</ul>
-  <button class={`btn ${p.featured ? 'primary' : ''}`} type="button" data-waitlist={p.id}>Join the {p.name} waitlist</button>
+  <button class={`btn ${p.featured ? 'primary' : ''}`} type="button" data-waitlist={p.id} data-plan-name={p.name}>Join the waitlist for {p.name}</button>
 </article>
 <style>
-  .plan { padding: var(--s3); display: flex; flex-direction: column; }
+  .plan { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s1); }
   .featured { --shadow: var(--action); }
   .head { display: flex; justify-content: space-between; align-items: start; gap: var(--s1); }
+  .head h3 { margin: 0; }
+  .price { margin: 0; }
   .price .num { font-size: 3rem; }
-  ul { padding-left: 1.2em; margin: 0 0 var(--s3); flex: 1; }
+  .line { margin: 0; color: var(--ink-2); }
+  .credits { margin: 0; font-family: var(--f-pixel); }
+  ul { padding-left: 1.2em; margin: var(--s1) 0 var(--s3); flex: 1; }
 </style>

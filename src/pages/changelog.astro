@@ -1,10 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+const entries = [
+  ['0.2.0', '2026-10-08', 'The site now has words. Previously it had square brackets.'],
+  ['0.1.1', '2026-10-08', 'Pixel logo, seven icons and the hero card. The logo is an a. It was nearly an e.'],
+  ['0.1.0', '2026-10-08', "Site skeleton on Astro and TypeScript, with a light mode and a dark mode. The dark mode was the dev's idea at 2 a.m."],
+  ['0.0.0', '[CONFIRM: date]', 'Domain registered.'],
+];
 ---
-<Base title="Changelog">
-  <PageHead eyebrow="Updates" title="Changelog">[COPY: Changelog intro]</PageHead>
-  <article class="wrap prose">
-    <ol class="log"><li><span class="num">2026-10-08</span> [COPY: first entry]</li></ol>
-  </article>
+<Base title="Changelog" description="Every change to the abliterate site, newest first.">
+  <PageHead title="Changelog" />
+  <div class="wrap"><ol class="log">
+    {entries.map(([v, d, t]) => (
+      <li><p class="meta"><span class="tag">{v}</span> <span class="num">{d}</span></p><p>{t}</p></li>
+    ))}
+  </ol></div>
 </Base>
+<style>
+  .log { list-style: none; display: grid; gap: var(--s4); max-width: 44rem; margin: 0; padding: 0; }
+  .log li { border-left: var(--px) solid var(--line); padding-left: var(--s2); }
+  .log p { margin: 0; }
+  .meta { display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s1) !important; }
+</style>

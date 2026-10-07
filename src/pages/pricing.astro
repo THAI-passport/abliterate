@@ -3,35 +3,49 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import PlanCard from '../components/PlanCard.astro';
-import { plans } from '../data/plans';
+import { plans, creditUsd, creditExpiryMonths, topUpList } from '../data/plans';
 import { models, usd, ctx } from '../data/models';
 ---
-<Base title="Pricing">
-  <PageHead eyebrow="Planned pricing" title="Pricing">[COPY: pricing intro: credits or subscription, nothing is for sale yet]</PageHead>
-  <section class="wrap section">
-    <h2 class="ih"><PixelIcon name="subscription" />Subscriptions</h2>
+<Base title="Pricing" description="Planned credit rates per model and planned Free, Pro and Max plans. Nothing is for sale yet.">
+  <PageHead title="Pricing">Prices are planned. Nothing is for sale yet, and the numbers below may change before launch.</PageHead>
+  <section class="wrap section first">
+    <h2 class="ih"><PixelIcon name="subscription" />Plans</h2>
     <div class="grid">{plans.map((p) => <PlanCard plan={p} />)}</div>
+    <p class="muted under">Joining is free and does not reserve a price.</p>
   </section>
   <section class="wrap section">
     <h2 class="ih"><PixelIcon name="coin" />Credits</h2>
-    <p class="muted">[COPY: pay as you go, per 1M tokens]</p>
+    <p>Credits are prepaid dollars. 1 credit equals <span class="num">${creditUsd}</span> of usage. Each model has its own rate per 1M tokens, with separate rates for input and output.</p>
     <div class="scroll frame">
       <table>
-        <thead><tr><th scope="col">Model</th><th scope="col">Context</th><th scope="col">Input / 1M</th><th scope="col">Output / 1M</th></tr></thead>
+        <caption>Planned rates, in credits per 1M tokens.</caption>
+        <thead><tr><th scope="col">Model</th><th scope="col">Context</th><th scope="col">Input</th><th scope="col">Output</th></tr></thead>
         <tbody>{models.map((m) => (
-          <tr><th scope="row"><a href={`/models/${m.id}`}>{m.name}</a> <span class="tag fiction">Fictional</span></th>
+          <tr><th scope="row"><a href={`/models/${m.id}`}>{m.name}</a> <span class="tag fiction">fictional</span></th>
             <td class="num">{ctx(m.context)}</td><td class="num">{usd(m.inputPrice)}</td><td class="num">{usd(m.outputPrice)}</td></tr>
         ))}</tbody>
       </table>
     </div>
-    <button class="btn primary" type="button" data-waitlist="credits">Join the credits waitlist</button>
+    <p>Credits can be topped up in packs of {topUpList()} at the same rate. Credits expire {creditExpiryMonths} months after they are granted or bought.</p>
+  </section>
+  <section class="wrap section">
+    <h2>Billing basics</h2>
+    <ul class="basics">
+      <li>You pay for the tokens you use, at the model's rate.</li>
+      <li>Plan credits renew monthly until you cancel.</li>
+      <li>Refunds and taxes: [CONFIRM: refund policy, tax handling].</li>
+    </ul>
   </section>
 </Base>
 <style>
+  .first { padding-top: var(--s3); }
   .ih { display: flex; align-items: center; gap: var(--s2); }
+  .under { margin-top: var(--s3); }
   .scroll { overflow-x: auto; margin-bottom: var(--s3); }
   table { width: 100%; border-collapse: collapse; min-width: 32rem; }
+  caption { text-align: left; padding: var(--s2) var(--s2) 0; color: var(--ink-2); font-size: var(--fs-xs); }
   th, td { text-align: left; padding: var(--s1) var(--s2); border-bottom: 2px solid var(--paper-2); }
   thead th { font: var(--fs-xs) var(--f-display); text-transform: uppercase; border-bottom-color: var(--line); }
   tbody th { font-weight: 400; }
+  .basics { padding-left: 1.2em; }
 </style>
