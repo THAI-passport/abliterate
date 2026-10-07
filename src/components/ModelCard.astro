@@ -2,9 +2,27 @@
 import { type Model, usd, ctx } from '../data/models';
 interface Props { model: Model }
 const { model: m } = Astro.props;
+
+const modelIcons: Record<string, string> = {
+  'abliterate-dong-flash-v2.3': '/img/icons/chip.png',
+  'abliterate-house-md-v5.2': '/img/icons/unlocked.png',
+  'abliterate-sonny-v2.5': '/img/icons/token.png',
+  'abliterate-antrax-v3.0': '/img/icons/status.png',
+  'abliterate-mable-v4.2': '/img/icons/subscription.png',
+  'abliterate-soul-5.5': '/img/icons/coin.png',
+};
+const icon = modelIcons[m.id] || '/img/icons/chip.png';
 ---
 <article class="card frame">
-  <div class="top"><span class="tag fiction">fictional</span>{m.tags.map((t) => <span class="tag">{t}</span>)}</div>
+  <div class="top">
+    <div class="tags">
+      <span class="tag fiction">fictional</span>
+      {m.tags.map((t) => <span class="tag">{t}</span>)}
+    </div>
+    <div class="icon-badge" aria-hidden="true">
+      <img src={icon} width="32" height="32" alt="" class="pixel-img" />
+    </div>
+  </div>
   <h3><a href={`/models/${m.id}`}>{m.name}</a></h3>
   <code class="id">{m.id}</code>
   <p class="muted">{m.tagline}</p>
@@ -15,12 +33,67 @@ const { model: m } = Astro.props;
   </dl>
 </article>
 <style>
-  .card { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s1); }
-  .top { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .card {
+    padding: var(--s3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+    position: relative;
+    background: var(--paper);
+    transition: transform var(--t-fast) var(--step), box-shadow var(--t-fast) var(--step);
+  }
+  .card:hover {
+    transform: translate(calc(var(--px) * -1), calc(var(--px) * -1));
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--line),
+      0 var(--px) 0 0 var(--line),
+      calc(var(--px) * -1) 0 0 0 var(--line),
+      var(--px) 0 0 0 var(--line),
+      calc(var(--px) * 3) calc(var(--px) * 3) 0 0 var(--shadow);
+  }
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s2);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1);
+    flex: 1;
+  }
+  .icon-badge {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    background: var(--paper-2);
+    border: 2px solid var(--line);
+    flex: none;
+  }
+  .icon-badge img {
+    width: 32px;
+    height: 32px;
+  }
   h3 { margin: var(--s1) 0 0; }
   h3 a { display: inline-flex; align-items: center; min-height: var(--touch); }
   .id { font-size: var(--fs-xs); color: var(--ink-2); overflow-wrap: anywhere; }
-  dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s1); margin: auto 0 0; padding-top: var(--s2); border-top: 2px solid var(--line); }
+  dl {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s1);
+    margin: auto 0 0;
+    padding-top: var(--s2);
+    border-top: 2px solid var(--line);
+  }
   dt { font-size: var(--fs-xs); color: var(--ink-2); }
   dd { margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+      transform: none !important;
+    }
+  }
 </style>

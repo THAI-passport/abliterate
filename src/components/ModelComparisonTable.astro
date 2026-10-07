@@ -1,0 +1,113 @@
+---
+import { models, usd, ctx } from '../data/models';
+---
+<div class="comparison-wrap">
+  <div class="table-head">
+    <h2>Model comparison</h2>
+    <p class="muted">Side-by-side specifications. All six models are fictional and planned.</p>
+  </div>
+  <div class="scroll frame">
+    <table class="comparison-table">
+      <caption class="visually-hidden">Comparison of all six planned models</caption>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Best for</th>
+          <th scope="col">Context</th>
+          <th scope="col">Input / 1M</th>
+          <th scope="col">Output / 1M</th>
+        </tr>
+      </thead>
+      <tbody>
+        {models.map((m) => (
+          <tr>
+            <th scope="row">
+              <div class="name-cell">
+                <a href={`/models/${m.id}`}>{m.name}</a>
+                <span class="tag fiction">fictional</span>
+              </div>
+            </th>
+            <td class="tagline-cell">{m.tagline}</td>
+            <td class="num">{ctx(m.context)}</td>
+            <td class="num">{usd(m.inputPrice)}</td>
+            <td class="num">{usd(m.outputPrice)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+<style>
+  .comparison-wrap {
+    margin-top: var(--s5);
+  }
+  .table-head {
+    margin-bottom: var(--s2);
+  }
+  .table-head h2 {
+    margin-bottom: var(--s1);
+  }
+  .scroll {
+    overflow-x: auto;
+    background: var(--paper);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 44rem;
+    font-size: var(--fs-s);
+  }
+  th, td {
+    text-align: left;
+    padding: var(--s2) var(--s3);
+    border-bottom: 2px solid var(--paper-2);
+    vertical-align: middle;
+  }
+  thead th {
+    font: var(--fs-xs) var(--f-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid var(--line);
+    background: var(--paper-2);
+  }
+  tbody th {
+    font-weight: 400;
+  }
+  tbody tr {
+    transition: background var(--t-fast) var(--step);
+  }
+  tbody tr:hover {
+    background: var(--paper-2);
+  }
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .name-cell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s1);
+  }
+  .name-cell a {
+    font-family: var(--f-pixel);
+    font-size: var(--fs-m);
+    min-height: var(--touch);
+    display: inline-flex;
+    align-items: center;
+  }
+  .tagline-cell {
+    color: var(--ink-2);
+    max-width: 18rem;
+  }
+  .num {
+    white-space: nowrap;
+    font-size: 1.15em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    tbody tr {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,462 @@
+---
+import { models, type Model, usd } from '../data/models';
+import { plans, creditUsd, topUpList } from '../data/plans';
+
+const defaultModel = models[0];
+const defaultIn = 50_000;
+const defaultOut = 10_000;
+
+const proPlan = plans.find((p) => p.id === 'pro')!;
+const maxPlan = plans.find((p) => p.id === 'max')!;
+const proAllowance = parseInt(proPlan.credits, 10);
+const maxAllowance = parseInt(maxPlan.credits, 10);
+
+// Initial static calculation for zero-JS fallback
+const initialMonthlyIn = defaultIn * 30;
+const initialMonthlyOut = defaultOut * 30;
+const initialInCost = (initialMonthlyIn / 1_000_000) * defaultModel.inputPrice;
+const initialOutCost = (initialMonthlyOut / 1_000_000) * defaultModel.outputPrice;
+const initialTotalUsd = initialInCost + initialOutCost;
+const initialCredits = (initialTotalUsd / creditUsd).toFixed(2);
+
+let initialPlanText = `Top-up packs (${topUpList()}) without a subscription.`;
+if (parseFloat(initialCredits) > maxAllowance) {
+  initialPlanText = `Max plan ($${maxPlan.price}/mo) plus top-up packs (${topUpList()}).`;
+} else if (parseFloat(initialCredits) > proAllowance) {
+  initialPlanText = `Max plan ($${maxPlan.price}/mo, ${maxPlan.credits}) covers this usage.`;
+} else if (parseFloat(initialCredits) >= 10) {
+  initialPlanText = `Pro plan ($${proPlan.price}/mo, ${proPlan.credits}) covers this usage.`;
+}
+---
+<div class="estimator-wrap" id="estimator">
+  <div class="est-head">
+    <div class="head-line">
+      <h2>Credit estimator</h2>
+      <span class="tag">planned rates, estimate only</span>
+    </div>
+    <p class="muted">Calculate planned monthly credit usage from your expected daily token volume.</p>
+  </div>
+
+  <div class="est-body frame">
+    <div class="form-side">
+      <fieldset class="model-fieldset">
+        <legend class="eyebrow">1. Choose a model</legend>
+        <div class="model-options" role="radiogroup" aria-label="Choose a model">
+          {models.map((m, idx) => (
+            <label class="model-label frame" for={`model-opt-${m.id}`}>
+              <input
+                type="radio"
+                name="est-model"
+                id={`model-opt-${m.id}`}
+                value={m.id}
+                checked={idx === 0}
+                data-in-rate={m.inputPrice}
+                data-out-rate={m.outputPrice}
+                data-name={m.name}
+              />
+              <span class="model-info">
+                <span class="name-row">
+                  <span class="model-name">{m.name}</span>
+                  <span class="tag fiction">fictional</span>
+                </span>
+                <span class="rates num">{usd(m.inputPrice)} in / {usd(m.outputPrice)} out</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="inputs-grid">
+        <div class="input-col">
+          <label class="eyebrow" for="est-input-daily">2. Input tokens / day</label>
+          <div class="input-wrap">
+            <input
+              type="number"
+              id="est-input-daily"
+              class="token-input frame num"
+              value={defaultIn}
+              min="0"
+              step="5000"
+              aria-describedby="est-in-hint"
+            />
+          </div>
+          <span id="est-in-hint" class="hint muted">Prompt tokens sent each day</span>
+          <div class="presets" role="group" aria-label="Input token presets">
+            <button type="button" class="preset-btn" data-target="est-input-daily" data-val="10000">10K</button>
+            <button type="button" class="preset-btn" data-target="est-input-daily" data-val="50000">50K</button>
+            <button type="button" class="preset-btn" data-target="est-input-daily" data-val="250000">250K</button>
+            <button type="button" class="preset-btn" data-target="est-input-daily" data-val="1000000">1M</button>
+          </div>
+        </div>
+
+        <div class="input-col">
+          <label class="eyebrow" for="est-output-daily">3. Output tokens / day</label>
+          <div class="input-wrap">
+            <input
+              type="number"
+              id="est-output-daily"
+              class="token-input frame num"
+              value={defaultOut}
+              min="0"
+              step="1000"
+              aria-describedby="est-out-hint"
+            />
+          </div>
+          <span id="est-out-hint" class="hint muted">Completion tokens returned each day</span>
+          <div class="presets" role="group" aria-label="Output token presets">
+            <button type="button" class="preset-btn" data-target="est-output-daily" data-val="5000">5K</button>
+            <button type="button" class="preset-btn" data-target="est-output-daily" data-val="10000">10K</button>
+            <button type="button" class="preset-btn" data-target="est-output-daily" data-val="50000">50K</button>
+            <button type="button" class="preset-btn" data-target="est-output-daily" data-val="200000">200K</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-side frame">
+      <h3 class="eyebrow">Monthly projection (30 days)</h3>
+      <div class="stat-block">
+        <div class="stat-label">Estimated credits</div>
+        <div class="stat-number">
+          <span class="num big" id="est-credits-display">{initialCredits}</span>
+          <span class="unit">credits / mo</span>
+        </div>
+        <div class="stat-sub muted" id="est-cost-display">≈ ${initialCredits} USD</div>
+      </div>
+
+      <div class="plan-recommendation">
+        <div class="rec-title eyebrow">Suggested plan</div>
+        <p class="rec-text" id="est-plan-recommendation">{initialPlanText}</p>
+      </div>
+
+      <div class="meta-breakdown muted">
+        <div><span>Monthly tokens:</span> <strong id="est-total-tokens-display" class="num">1.8M</strong></div>
+        <div><span>Input rate:</span> <span id="est-in-rate-display" class="num">{usd(defaultModel.inputPrice)} / 1M</span></div>
+        <div><span>Output rate:</span> <span id="est-out-rate-display" class="num">{usd(defaultModel.outputPrice)} / 1M</span></div>
+      </div>
+
+      <p class="fn">*Planned rates, estimate only. No model is available yet.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .estimator-wrap {
+    margin: var(--s5) 0 var(--s4);
+  }
+  .est-head {
+    margin-bottom: var(--s3);
+  }
+  .head-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2);
+    margin-bottom: var(--s1);
+  }
+  .head-line h2 {
+    margin: 0;
+  }
+  .est-body {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--s4);
+    padding: var(--s4);
+    background: var(--paper);
+  }
+  .form-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+  }
+  .model-fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .model-fieldset legend {
+    margin-bottom: var(--s2);
+    padding: 0;
+  }
+  .model-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+    gap: var(--s2);
+  }
+  .model-label {
+    display: flex;
+    align-items: center;
+    padding: var(--s2);
+    cursor: pointer;
+    background: var(--paper-2);
+    min-height: var(--touch);
+    position: relative;
+    transition: background var(--t-fast) var(--step), transform var(--t-fast) var(--step);
+  }
+  .model-label:hover {
+    background: var(--paper);
+  }
+  .model-label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .model-label:has(input[type="radio"]:checked) {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .model-label:has(input[type="radio"]:checked) .rates {
+    color: var(--paper);
+  }
+  .model-label:has(input[type="radio"]:checked) .tag.fiction {
+    background: var(--action);
+    color: var(--action-ink);
+    border-color: var(--action);
+  }
+  .model-label:has(input[type="radio"]:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .model-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+  }
+  .name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s1);
+  }
+  .model-name {
+    font-family: var(--f-pixel);
+    font-size: var(--fs-s);
+  }
+  .rates {
+    font-size: var(--fs-xs);
+    color: var(--ink-2);
+  }
+  .inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s3);
+  }
+  .input-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+  }
+  .token-input {
+    width: 100%;
+    min-height: var(--touch);
+    padding: var(--s1) var(--s2);
+    font-size: var(--fs-l);
+    background: var(--paper-2);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    margin: var(--px) 0;
+  }
+  .token-input:focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .hint {
+    font-size: var(--fs-xs);
+  }
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1);
+    margin-top: 0.25rem;
+  }
+  .preset-btn {
+    min-height: 28px;
+    padding: 2px var(--s1);
+    font: var(--fs-xs) var(--f-mono);
+    background: var(--paper-2);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--step);
+  }
+  .preset-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .preset-btn:active {
+    transform: translate(1px, 1px);
+  }
+  .result-side {
+    background: var(--paper-2);
+    padding: var(--s3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+    justify-content: space-between;
+  }
+  .stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .stat-label {
+    font-family: var(--f-display);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .stat-number {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s1);
+  }
+  .big {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1;
+    color: var(--action-text);
+  }
+  .unit {
+    font-family: var(--f-pixel);
+    font-size: var(--fs-s);
+  }
+  .stat-sub {
+    font-size: var(--fs-s);
+  }
+  .plan-recommendation {
+    padding: var(--s2);
+    background: var(--paper);
+    border-left: 3px solid var(--action);
+  }
+  .rec-title {
+    margin-bottom: 0.25rem;
+  }
+  .rec-text {
+    margin: 0;
+    font-family: var(--f-body);
+    font-size: var(--fs-s);
+  }
+  .meta-breakdown {
+    font-size: var(--fs-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: var(--s2);
+    border-top: 1px solid var(--line);
+  }
+  .meta-breakdown div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 900px) {
+    .est-body {
+      grid-template-columns: 1fr;
+      padding: var(--s3);
+    }
+    .inputs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .model-label, .preset-btn {
+      transition: none;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { plans, creditUsd, topUpList } from '../data/plans';
+
+  const proPlan = plans.find((p) => p.id === 'pro')!;
+  const maxPlan = plans.find((p) => p.id === 'max')!;
+  const proAllowance = parseInt(proPlan.credits, 10);
+  const maxAllowance = parseInt(maxPlan.credits, 10);
+  const topUpsText = topUpList();
+
+  const inInput = document.getElementById('est-input-daily') as HTMLInputElement | null;
+  const outInput = document.getElementById('est-output-daily') as HTMLInputElement | null;
+  const creditsDisplay = document.getElementById('est-credits-display');
+  const costDisplay = document.getElementById('est-cost-display');
+  const planDisplay = document.getElementById('est-plan-recommendation');
+  const totalTokensDisplay = document.getElementById('est-total-tokens-display');
+  const inRateDisplay = document.getElementById('est-in-rate-display');
+  const outRateDisplay = document.getElementById('est-out-rate-display');
+  const radios = document.querySelectorAll<HTMLInputElement>('input[name="est-model"]');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('.preset-btn');
+
+  function calculate() {
+    if (!inInput || !outInput || !creditsDisplay) return;
+
+    let selectedRadio: HTMLInputElement | null = null;
+    radios.forEach((r) => {
+      if (r.checked) selectedRadio = r;
+    });
+    if (!selectedRadio) return;
+
+    const inRate = parseFloat((selectedRadio as HTMLInputElement).dataset.inRate || '0');
+    const outRate = parseFloat((selectedRadio as HTMLInputElement).dataset.outRate || '0');
+
+    const inDaily = Math.max(0, parseFloat(inInput.value) || 0);
+    const outDaily = Math.max(0, parseFloat(outInput.value) || 0);
+
+    const monthlyIn = inDaily * 30;
+    const monthlyOut = outDaily * 30;
+    const totalTokens = monthlyIn + monthlyOut;
+
+    const inCost = (monthlyIn / 1_000_000) * inRate;
+    const outCost = (monthlyOut / 1_000_000) * outRate;
+    const totalDollars = inCost + outCost;
+    const credits = totalDollars / creditUsd;
+
+    creditsDisplay.textContent = credits.toFixed(2);
+    if (costDisplay) costDisplay.textContent = `≈ $${totalDollars.toFixed(2)} USD`;
+
+    if (totalTokensDisplay) {
+      if (totalTokens >= 1_000_000) {
+        totalTokensDisplay.textContent = `${(totalTokens / 1_000_000).toFixed(1)}M`;
+      } else if (totalTokens >= 1_000) {
+        totalTokensDisplay.textContent = `${Math.round(totalTokens / 1_000)}K`;
+      } else {
+        totalTokensDisplay.textContent = `${totalTokens}`;
+      }
+    }
+
+    if (inRateDisplay) inRateDisplay.textContent = `$${inRate.toFixed(2)} / 1M`;
+    if (outRateDisplay) outRateDisplay.textContent = `$${outRate.toFixed(2)} / 1M`;
+
+    if (planDisplay) {
+      if (credits > maxAllowance) {
+        planDisplay.textContent = `Max plan ($${maxPlan.price}/mo) plus top-up packs (${topUpsText}).`;
+      } else if (credits > proAllowance) {
+        planDisplay.textContent = `Max plan ($${maxPlan.price}/mo, ${maxPlan.credits}) covers this usage.`;
+      } else if (credits >= 10) {
+        planDisplay.textContent = `Pro plan ($${proPlan.price}/mo, ${proPlan.credits}) covers this usage.`;
+      } else {
+        planDisplay.textContent = `Top-up packs (${topUpsText}) without a subscription.`;
+      }
+    }
+  }
+
+  radios.forEach((r) => r.addEventListener('change', calculate));
+  if (inInput) inInput.addEventListener('input', calculate);
+  if (outInput) outInput.addEventListener('input', calculate);
+
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.target;
+      const val = btn.dataset.val;
+      if (targetId && val) {
+        const input = document.getElementById(targetId) as HTMLInputElement | null;
+        if (input) {
+          input.value = val;
+          calculate();
+        }
+      }
+    });
+  });
+
+  calculate();
+</script>
