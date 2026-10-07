@@ -457,7 +457,7 @@ abliterate sells access to abliterated models: open-weight models with their ref
 6. **Acceptable use.** You must follow the acceptable use policy. Breaking it can end your access.
 7. **Your content.** You own your prompts. As between you and the operator, you own the outputs to the extent the law allows. The operator does not store prompts or outputs (see the privacy page) and claims no rights in them.
 8. **No warranty.** The service is provided as is. Models produce incorrect, offensive or unexpected output, and abliterated models do so more freely. The operator gives no warranty of accuracy or fitness for a purpose.
-9. **Liability.** To the extent the law allows, the operator's liability is limited to the amount you paid in the 12 months before the claim. This limit does not apply where the law does not allow it.
+9. **Liability.** To the extent the law allows, the operator's liability is limited to the amount you paid in the 12 months before the claim.
 10. **Changes and ending access.** The terms can change, and the date at the top says when they last did. You can stop using the service at any time. The operator can end access for breaking these terms or the acceptable use policy.
 11. **Governing law.** These terms are governed by the laws of the State of Delaware, United States. Disputes go to the courts of Delaware, unless the law where you live says otherwise.
 12. **Contact.** hello@abliterate.app.
