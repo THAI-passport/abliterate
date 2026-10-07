@@ -5,8 +5,7 @@ import CodeBlock from '../components/CodeBlock.astro';
 import PixelIcon from '../components/PixelIcon.astro';
 import Icon from '../components/Icon.astro';
 import { models } from '../data/models';
-import { plans, creditUsd, planPrice } from '../data/plans';
-const free = plans.find((p) => p.id === 'free')!;
+import { creditUsd, entryUsd } from '../data/plans';
 const sample = `from openai import OpenAI
 
 client = OpenAI(
@@ -22,7 +21,7 @@ print(reply.choices[0].message.content)`;
 const values = [
   { icon: 'chip', h: 'Works with the tools you already use.', t: 'The planned endpoint accepts the OpenAI chat completions format. Change the base URL and the key, and keep the rest of your code.' },
   { icon: 'unlocked', h: 'Models with the refusals removed.', t: 'Abliteration removes the refusal behavior from an open-weight model, so it answers the question you asked. The service still has limits, and they are written down.' },
-  { icon: 'coin', h: 'Pay per token, or subscribe.', t: `Credits are prepaid dollars: 1 credit equals $${creditUsd} of usage. Every model has its own rate. Free, Pro and Max plans are planned.` },
+  { icon: 'coin', h: 'Pay per token, or subscribe.', t: `Credits are prepaid dollars: 1 credit equals $${creditUsd} of usage. Every model has its own rate. Pro and Max plans are planned.` },
   { icon: 'envelope', h: 'Nothing you send is kept.', t: 'Once the API exists, prompts and completions are never stored and never used for training. Only billing metadata is kept, for 90 days. The pledge is easier to keep while there is no API.' },
 ] as const;
 const trust = [
@@ -104,7 +103,7 @@ const quotes = [
   <section class="wrap section split">
     <div>
       <h2>Pay per token, or subscribe.</h2>
-      <p class="muted">Prices are planned. Rates are listed per model and plans start at <span class="num">{planPrice(free)}</span>.</p>
+      <p class="muted">Prices are planned. Rates are listed per model and credits start at <span class="num">${entryUsd}</span>.</p>
       <a class="btn" href="/pricing">See pricing</a>
     </div>
     <ul class="trust">

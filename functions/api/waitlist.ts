@@ -1,6 +1,7 @@
 // Cloudflare Pages Function: POST /api/waitlist -> Buttondown (double opt-in handled by Buttondown).
 // BUTTONDOWN_API_KEY is a Cloudflare env var (.dev.vars locally); never commit it.
-// Stores only the email (and Buttondown's consent time): no plan or source tags until P4 is decided.
+// Stores only the email (and Buttondown's consent time): no tags (P4). An address that is already
+// subscribed gets the same answer as a new one, so the form never reveals who is on the list (P5).
 interface Env { BUTTONDOWN_API_KEY: string }
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
@@ -10,21 +11,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const email = typeof body.email === 'string' ? body.email.trim().slice(0, 254) : '';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: 'invalid' }, 400);
 
-  const auth = { Authorization: `Token ${env.BUTTONDOWN_API_KEY}` };
   const r = await fetch('https://api.buttondown.com/v1/subscribers', {
     method: 'POST',
-    headers: { ...auth, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Token ${env.BUTTONDOWN_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email_address: email }),
   });
   if (r.ok) return json({ ok: true }, 200);
-  const text = await r.text();
-  if (r.status === 409 || /already/i.test(text)) {
-    // Already there: confirmed, or still waiting for the confirmation click (Buttondown: "unactivated"). See P5.
-    const s = await fetch(`https://api.buttondown.com/v1/subscribers/${encodeURIComponent(email)}`, { headers: auth });
-    const type = s.ok ? ((await s.json()) as { type?: string; subscriber_type?: string }) : {};
-    const state = type.type ?? type.subscriber_type ?? '';
-    return json({ error: state === 'unactivated' ? 'unconfirmed' : 'exists' }, 409);
-  }
+  // Buttondown answers an existing address with 4xx and an "already" message (shape unverified, P5): same reply as a new signup.
+  if (r.status === 409 || (r.status === 400 && /already|exists/i.test(await r.text()))) return json({ ok: true }, 200);
   if (r.status === 400) return json({ error: 'invalid' }, 400);
   return json({ error: 'server' }, 502);
 };

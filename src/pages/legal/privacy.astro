@@ -4,7 +4,7 @@ import PageHead from '../../components/PageHead.astro';
 const sections = [
   ['What is stored today', 'The waitlist stores your email address and the time you agreed to join. Nothing else about you is stored.'],
   ['Analytics', 'The site uses Cloudflare Web Analytics. It sets no cookies and identifies no one. It reports aggregate counts such as page views.'],
-  ['Who processes the data', "Buttondown sends the waitlist emails and holds the list. Cloudflare hosts the site and provides the analytics. Payments, once they exist, will go through a payment provider: [CONFIRM: provider]. Card details never reach the operator's servers."],
+  ['Who processes the data', "Buttondown sends the waitlist emails and holds the list. Cloudflare hosts the site and provides the analytics. Payments, once they exist, will go through Stripe. Card details never reach the operator's servers."],
   ['The no-logging pledge', 'This applies once the API exists. Prompts and completions are never stored and never used for training. Requests are processed in memory and discarded when the response ends. The only record kept per request is billing metadata: key ID, timestamp, model and token counts. It is kept for 90 days.'],
   ['The trade-off', 'Because content is not logged, abliterate cannot review it. Abuse is handled through metadata patterns, user reports and valid legal process.'],
   ['Unsubscribing and deletion', 'Every email has an unsubscribe link. To have your address deleted from the list, email <a href="mailto:hello@abliterate.app">hello@abliterate.app</a>.'],

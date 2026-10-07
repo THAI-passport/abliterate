@@ -59,3 +59,15 @@ Also from dialogue.md "Open items": whether abuse reports and contact use the sa
 
 - Landing "Pricing teaser" renders as "plans start at $0" (the Free plan price from data). Correct, but reads oddly; "start free" may be what was meant.
 - FAQ "Who is this for?" uses "uncensored AI": the fixed vocabulary bans "AI" for what the API serves. It describes what people want, so it may be intended.
+
+## P4 update (2026-10-08): SOLVED, tags dropped
+
+Owner chose email and consent time only. Nothing to amend; the function and dialog already behave that way.
+
+## P5 update (2026-10-08): decision made, API check still OPEN
+
+Owner chose to hide membership: a duplicate gets the same success reply as a new address, and the `exists` / `unconfirmed` copy and parsing were removed. What remains unverified: the status and body Buttondown really returns for a duplicate (the function treats 409, or a 400 mentioning "already" or "exists", as success; any other 400 shows "invalid"). Needs a real call with a key in `.dev.vars` (wrangler is not installed here).
+
+## P10 update (2026-10-08): SOLVED
+
+There is no free plan. Free was removed from `plans.ts`, pricing, FAQ, landing and `dialogue.md`; the landing teaser now reads "credits start at $10" from the smallest top-up. "uncensored AI" stays in the FAQ. Stripe Tax and Stripe are filled into pricing, terms and privacy (P9 payment provider and taxes done).

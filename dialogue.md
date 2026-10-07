@@ -68,7 +68,7 @@ Answer: **As suggested.**
 **Q19 FAQ shape.** 14 questions in 4 groups (The models, Money, Privacy and rules, The dev), "Do these models exist?" and "What does abliterated mean?" first, joke in the last sentence of an answer, a plain "no" to "Will it answer anything?".
 Answer: **As suggested.**
 
-**Q20 Credits and allowances.** 1 credit = $1 at the per-model rate in `models.ts`. Free 1 credit once; Pro $20/month = 22 credits; Max $100/month = 120 credits; top-up packs $10, $50, $200 at 1:1; unused credits expire after 12 months; everything tagged "planned" and subject to change before launch.
+**Q20 Credits and allowances.** 1 credit = $1 at the per-model rate in `models.ts`. No free plan; Pro $20/month = 22 credits; Max $100/month = 120 credits; top-up packs $10, $50, $200 at 1:1; unused credits expire after 12 months; everything tagged "planned" and subject to change before launch.
 Answer: **As suggested.**
 
 **Q21 No-logging pledge.** Once the API exists: prompts and completions never stored, never used for training; billing metadata only (key id, timestamp, model, token counts) for 90 days. Today: waitlist email and consent time in Buttondown, cookieless Cloudflare Web Analytics. Enforcement trade-off stated in one sentence. Entity name, address and governing law are `[CONFIRM]` placeholders.
@@ -134,8 +134,7 @@ Conventions. `{...}` is a value rendered from `src/data/`. `[CONFIRM: ...]` is a
 - Success: You are on the list once you confirm. Check your inbox for the confirmation email. After that you will get one email, when a model exists. Do not wait up.
 - Error, invalid address: That email address does not look right. Check it and try again.
 - Error, network: The request did not go through. Check your connection and try again in a minute.
-- Error, already on the list: That address is already on the list.
-- Error, awaiting confirmation: That address is waiting for confirmation. Check your inbox, and the spam folder.
+- (Removed 2026-10-08, P5: an address already on the list gets the same success message, so the form never reveals who is subscribed.)
 - Error, server: Something failed on the server. Try again in a minute.
 - Confirmation email, subject: Confirm your abliterate waitlist signup
 - Confirmation email, body: Select the link to confirm that this address should join the abliterate waitlist. If you did not sign up, ignore this email and nothing will happen. [Confirm my address]. abliterate, hello@abliterate.app
@@ -159,7 +158,7 @@ Conventions. `{...}` is a value rendered from `src/data/`. `[CONFIRM: ...]` is a
 **Value propositions (heading, then text).**
 1. Works with the tools you already use. The planned endpoint accepts the OpenAI chat completions format. Change the base URL and the key, and keep the rest of your code.
 2. Models with the refusals removed. Abliteration removes the refusal behavior from an open-weight model, so it answers the question you asked. The service still has limits, and they are written down.
-3. Pay per token, or subscribe. Credits are prepaid dollars: 1 credit equals $1 of usage. Every model has its own rate. Free, Pro and Max plans are planned.
+3. Pay per token, or subscribe. Credits are prepaid dollars: 1 credit equals $1 of usage. Every model has its own rate. Pro and Max plans are planned.
 4. Nothing you send is kept. Once the API exists, prompts and completions are never stored and never used for training. Only billing metadata is kept, for 90 days. The pledge is easier to keep while there is no API.
 
 **Trust row (label, line).**
@@ -202,7 +201,7 @@ print(reply.choices[0].message.content)
 - "Yes." The model, asked whether it would answer.
 - Under the quotes: Every quote was invented by the dev, who is also the only person who has read them.
 
-**Pricing teaser.** Heading: Pay per token, or subscribe. Text: Prices are planned. Rates are listed per model and plans start at {free plan price}. Button: See pricing
+**Pricing teaser.** Heading: Pay per token, or subscribe. Text: Prices are planned. Rates are listed per model and credits start at {smallest top-up pack}. Button: See pricing
 
 **Closing call.** Heading: Join the waitlist. Text: You will be told once, when a model exists. Button: Join the waitlist.
 
@@ -250,7 +249,7 @@ print(reply.choices[0].message.content)
 ### Pricing (`/pricing`) (level 0)
 
 **Title.** Pricing | abliterate
-**Meta description.** Planned credit rates per model and planned Free, Pro and Max plans. Nothing is for sale yet.
+**Meta description.** Planned credit rates per model and planned Pro and Max plans. Nothing is for sale yet.
 **H1.** Pricing
 **Intro.** Prices are planned. Nothing is for sale yet, and the numbers below may change before launch.
 
@@ -264,16 +263,15 @@ print(reply.choices[0].message.content)
 **Plans.**
 - Heading: Plans
 - Status tag on each plan: planned
-- Free. Line: For trying the API. Credits: 1 credit, once. Features: All six models. Low rate limits.
 - Pro. Line: For regular use. Credits: 22 credits per month. Features: All six models. Higher rate limits. Top-ups at the same rates.
 - Max. Line: For heavy use. Credits: 120 credits per month. Features: All six models. Highest rate limits. Top-ups at the same rates. Priority queue.
-- Buttons: Join the waitlist for Free, Join the waitlist for Pro, Join the waitlist for Max.
+- Buttons: Join the waitlist for Pro, Join the waitlist for Max.
 - Line under buttons: Joining is free and does not reserve a price.
 
 **Billing basics.**
 - You pay for the tokens you use, at the model's rate.
 - Plan credits renew monthly until you cancel.
-- Refunds and taxes: [CONFIRM: refund policy, tax handling].
+- Taxes are calculated at checkout by Stripe Tax. Refunds: [CONFIRM: refund policy].
 
 ### Start here (`/start`)
 
@@ -334,7 +332,7 @@ What you should see: the model in the app's model list, answering when you type 
 
 6. **When will it launch?** There is no date. The launch depends on funding for inference, and the funding is the dev. Joining the waitlist gets you one email when a model exists.
 7. **How do credits work?** A credit is a prepaid dollar: 1 credit equals $1 of usage. Each request costs the model's rate for the input and output tokens used. Credits expire 12 months after they are granted or bought. All billing is planned and may change before launch.
-8. **What do Free, Pro and Max include?** Free is the trial, Pro is for regular use and Max is for heavy use. Allowances and prices are on the [pricing page]. All three are planned.
+8. **What do Pro and Max include?** Pro is for regular use and Max is for heavy use. Allowances and prices are on the [pricing page]. Both are planned.
 
 **Privacy and rules**
 

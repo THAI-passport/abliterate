@@ -74,7 +74,7 @@ Devices, in order of preference: absurd precision ("14% of a world map, in a spr
 ## Pricing (copy decisions; numbers live in `src/data/`)
 
 - 1 credit = $1 of usage at each model's per-1M-token rate (`models.ts`). No inflated credit unit.
-- Free: 1 credit, once, rate limited. Pro $20/month: 22 credits per month. Max $100/month: 120 credits per month. Top-up packs of $10, $50 and $200 at 1:1. Unused credits expire after 12 months.
+- No free plan (owner, 2026-10-08): the site sells credits or a subscription. Cheapest way in is the smallest top-up pack ($10, `entryUsd` in `plans.ts`); the landing teaser says "credits start at $10". Taxes are calculated at checkout by Stripe Tax, and Stripe is the payment provider. Pro $20/month: 22 credits per month. Max $100/month: 120 credits per month. Top-up packs of $10, $50 and $200 at 1:1. Unused credits expire after 12 months.
 - Everything is tagged "planned" and may change before launch. The allowance numbers go in `plans.ts`; copy files never repeat price numbers in prose.
 
 ## Privacy and legal
@@ -109,3 +109,5 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - Pages with no line in `dialogue.md` got none: the scaffold's eyebrows ("Catalogue", "Legal") and the waitlist success heading are gone. Model detail pages had no meta description in the copy; it is built from data: "{name}: {tagline} A planned abliterated model. Fictional, not available yet."
 - Section rhythm: `.section` sets block padding only, so `.wrap` keeps the 16 px side gutter at 375 px.
 - Redaction bar: exactly two on the site, 404 ("missing") and Status ("750"). In forced-colors mode the word shows, outlined; in print the bar prints as a bar.
+- Waitlist (2026-10-08): no plan or source tags (P4 closed, AGENTS.md unchanged). An already-subscribed address gets the same success reply as a new one, so membership is never revealed (P5 closed); the `exists` and `unconfirmed` errors are gone from the function, the dialog and `dialogue.md`. The reply shape for a duplicate is still unverified against the real API.
+- Copy decisions (2026-10-08): the Free plan is removed (see Pricing). The FAQ keeps "uncensored AI" in "Who is this for?" on purpose, as what people search for.

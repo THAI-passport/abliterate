@@ -6,7 +6,7 @@ import PlanCard from '../components/PlanCard.astro';
 import { plans, creditUsd, creditExpiryMonths, topUpList } from '../data/plans';
 import { models, usd, ctx } from '../data/models';
 ---
-<Base title="Pricing" description="Planned credit rates per model and planned Free, Pro and Max plans. Nothing is for sale yet.">
+<Base title="Pricing" description="Planned credit rates per model and planned Pro and Max plans. Nothing is for sale yet.">
   <PageHead title="Pricing">Prices are planned. Nothing is for sale yet, and the numbers below may change before launch.</PageHead>
   <section class="wrap section first">
     <h2 class="ih"><PixelIcon name="subscription" />Plans</h2>
@@ -33,7 +33,7 @@ import { models, usd, ctx } from '../data/models';
     <ul class="basics">
       <li>You pay for the tokens you use, at the model's rate.</li>
       <li>Plan credits renew monthly until you cancel.</li>
-      <li>Refunds and taxes: [CONFIRM: refund policy, tax handling].</li>
+      <li>Taxes are calculated at checkout by Stripe Tax. Refunds: [CONFIRM: refund policy].</li>
     </ul>
   </section>
 </Base>
