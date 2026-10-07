@@ -20,6 +20,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   // Buttondown answers an existing address with 4xx and an "already" message (shape unverified, P5): same reply as a new signup.
   if (r.status === 409 || (r.status === 400 && /already|exists/i.test(await r.text()))) return json({ ok: true }, 200);
   if (r.status === 400) return json({ error: 'invalid' }, 400);
+  console.error('buttondown', r.status, (await r.text()).slice(0, 200));
   return json({ error: 'server' }, 502);
 };
 

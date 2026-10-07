@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import ModelCard from '../components/ModelCard.astro';
 import CodeBlock from '../components/CodeBlock.astro';
-import PixelIcon from '../components/PixelIcon.astro';
 import Icon from '../components/Icon.astro';
 import { models } from '../data/models';
 import { creditUsd, entryUsd } from '../data/plans';
@@ -19,10 +18,10 @@ reply = client.chat.completions.create(
 )
 print(reply.choices[0].message.content)`;
 const values = [
-  { icon: 'chip', h: 'Works with the tools you already use.', t: 'The planned endpoint accepts the OpenAI chat completions format. Change the base URL and the key, and keep the rest of your code.' },
-  { icon: 'unlocked', h: 'Models with the refusals removed.', t: 'Abliteration removes the refusal behavior from an open-weight model, so it answers the question you asked. The service still has limits, and they are written down.' },
-  { icon: 'coin', h: 'Pay per token, or subscribe.', t: `Credits are prepaid dollars: 1 credit equals $${creditUsd} of usage. Every model has its own rate. Pro and Max plans are planned.` },
-  { icon: 'envelope', h: 'Nothing you send is kept.', t: 'Once the API exists, prompts and completions are never stored and never used for training. Only billing metadata is kept, for 90 days. The pledge is easier to keep while there is no API.' },
+  { icon: 'plug', h: 'Works with the tools you already use.', t: 'The planned endpoint accepts the OpenAI chat completions format. Change the base URL and the key, and keep the rest of your code.' },
+  { icon: 'lock-open', h: 'Models with the refusals removed.', t: 'Abliteration removes the refusal behavior from an open-weight model, so it answers the question you asked. The service still has limits, and they are written down.' },
+  { icon: 'coins', h: 'Pay per token, or subscribe.', t: `Credits are prepaid dollars: 1 credit equals $${creditUsd} of usage. Every model has its own rate. Pro and Max plans are planned.` },
+  { icon: 'shield-check', h: 'Nothing you send is kept.', t: 'Once the API exists, prompts and completions are never stored and never used for training. Only billing metadata is kept, for 90 days. The pledge is easier to keep while there is no API.' },
 ] as const;
 const trust = [
   ['No-logging pledge', 'Prompts and completions are never stored.', '/legal/privacy'],
@@ -62,7 +61,7 @@ const quotes = [
   <section class="wrap section values">
     {values.map((v) => (
       <div class="value">
-        <PixelIcon name={v.icon} scale={3} />
+        <span class="tile frame"><Icon name={v.icon} /></span>
         <h2>{v.h}</h2>
         <p class="muted">{v.t}</p>
       </div>
@@ -135,7 +134,7 @@ const quotes = [
   .art img { width: 100%; height: auto; }
   .art figcaption { font-size: var(--fs-xs); margin-top: var(--s2); text-align: center; }
   .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--s4); border-top: 2px solid var(--line); }
-  .value h2 { font-size: var(--fs-l); font-family: var(--f-pixel); margin: var(--s2) 0 var(--s1); }
+  .value h2 { font-size: var(--fs-l); font-family: var(--f-pixel); margin: var(--s3) 0 var(--s1); }
   .band { background: var(--paper-2); }
   .split { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s5); align-items: center; }
   .head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s2); margin-bottom: var(--s2); }

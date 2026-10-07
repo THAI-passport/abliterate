@@ -55,6 +55,10 @@ a:hover { background: var(--action); color: var(--action-ink); text-decoration: 
     calc(var(--px) * 2) calc(var(--px) * 2) 0 0 var(--shadow);
 }
 
+/* Icon tile: a Lucide glyph in a notched frame, so icons stay crisp and the pixel look lives in the frame. */
+.tile { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; background: var(--paper-2); color: var(--ink); }
+.tile .icon { width: 1.75rem; height: 1.75rem; }
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s1);
   min-height: var(--touch); padding: var(--s1) var(--s3); text-align: center; line-height: 1.3;

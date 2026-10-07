@@ -2,12 +2,11 @@
 // One in-page dialog for every "join" button. [data-waitlist] opens it; [data-plan-name] adds the plan line.
 // Copy: dialogue.md, "Waitlist dialog". The plan is shown, never sent (P4).
 import Icon from './Icon.astro';
-import PixelIcon from './PixelIcon.astro';
 ---
 <dialog class="wl frame" aria-labelledby="wl-title">
   <form class="body" novalidate>
     <button class="btn close" type="button" aria-label="Close" data-close><Icon name="x" /></button>
-    <PixelIcon name="envelope" scale={3} />
+    <span class="tile frame"><Icon name="mail" /></span>
     <h2 id="wl-title">Join the waitlist</h2>
     <p class="muted">One email to confirm your address, and one when a model exists. Both have an unsubscribe link.</p>
     <p class="plan-line" hidden>Joining for: <strong class="plan-name"></strong></p>
@@ -20,7 +19,7 @@ import PixelIcon from './PixelIcon.astro';
   </form>
   <div class="body done" hidden>
     <button class="btn close" type="button" aria-label="Close" data-close><Icon name="x" /></button>
-    <PixelIcon name="envelope" scale={3} />
+    <span class="tile frame"><Icon name="mail" /></span>
     <p class="done-text" role="status">You are on the list once you confirm. Check your inbox for the confirmation email. After that you will get one email, when a model exists. Do not wait up.</p>
     <button class="btn" type="button" data-close>Close</button>
   </div>
