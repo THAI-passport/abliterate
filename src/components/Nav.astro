@@ -15,27 +15,28 @@ const path = Astro.url.pathname;
           : <li><span class="soon">{n.label} <span class="tag">soon</span></span></li>)}
       </ul>
       <div class="actions">
-        <button class="btn theme" type="button" aria-label="Switch colour theme"><Icon name="sun" /><Icon name="moon" /></button>
+        <button class="btn theme" type="button" aria-label="Dark theme" aria-pressed="false"><Icon name="sun" /><Icon name="moon" /></button>
         <button class="btn primary" type="button" data-waitlist="general">Join the waitlist</button>
       </div>
     </nav>
   </div>
 </header>
 <style>
-  .nav { border-bottom: 2px solid var(--line); }
+  .nav { position: relative; border-bottom: 2px solid var(--line); }
   .row { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); padding-block: var(--s1); }
   nav { display: flex; align-items: center; gap: var(--s3); }
   ul { display: flex; gap: var(--s2); list-style: none; margin: 0; padding: 0; font-family: var(--f-pixel); }
-  ul a, .soon { display: inline-flex; align-items: center; gap: var(--s1); min-height: var(--touch); padding: 0 var(--s1); text-decoration: none; }
+  ul a, .soon { display: inline-flex; align-items: center; gap: var(--s1); min-height: var(--touch); padding: 0 var(--s1); text-decoration: none; white-space: nowrap; }
   ul a[aria-current='page'] { text-decoration: underline; text-decoration-color: var(--action); text-decoration-thickness: 3px; }
   .soon { color: var(--ink-2); }
-  .actions { display: flex; align-items: center; gap: var(--s1); }
+  .actions { display: flex; align-items: center; gap: var(--s1); white-space: nowrap; }
   .theme { padding: 0 var(--s1); min-width: var(--touch); }
   :root:not([data-theme='dark']) .theme .icon:last-child, :root[data-theme='dark'] .theme .icon:first-child { display: none; }
   .menu { display: none; padding: 0 var(--s1); min-width: var(--touch); }
-  @media (max-width: 860px) {
+  /* The only place the breakpoint lives; the script reads the menu button's visibility instead (P16). */
+  @media (max-width: 1024px) {
     .menu { display: inline-flex; }
-    nav { display: none; position: absolute; left: 0; right: 0; top: 4.25rem; z-index: 10; flex-direction: column; align-items: stretch; padding: var(--s2); background: var(--paper); border-bottom: 2px solid var(--line); }
+    nav { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 10; flex-direction: column; align-items: stretch; padding: var(--s2); background: var(--paper); border-bottom: 2px solid var(--line); }
     nav.open { display: flex; }
     ul { flex-direction: column; gap: 0; }
   }
@@ -43,14 +44,30 @@ const path = Astro.url.pathname;
 <script>
   const menu = document.querySelector<HTMLButtonElement>('.menu')!;
   const links = document.getElementById('nav-links')!;
-  menu.addEventListener('click', () => {
-    const open = links.classList.toggle('open');
+  const setOpen = (open: boolean, focusButton = false) => {
+    links.classList.toggle('open', open);
     menu.setAttribute('aria-expanded', String(open));
+    if (open) links.querySelector<HTMLElement>('a, button')?.focus();
+    else if (focusButton) menu.focus();
+  };
+  menu.addEventListener('click', () => setOpen(!links.classList.contains('open')));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && links.classList.contains('open')) setOpen(false, true);
   });
-  document.querySelector('.theme')!.addEventListener('click', () => {
-    const root = document.documentElement;
-    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-    root.dataset.theme = dark ? 'light' : 'dark';
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (links.classList.contains('open') && (!t.closest('.nav') || t.closest('#nav-links a, #nav-links [data-waitlist]'))) setOpen(false);
+  });
+  // Grown past the breakpoint: the menu button is hidden, so a stale open state must go.
+  addEventListener('resize', () => { if (!menu.offsetParent && links.classList.contains('open')) setOpen(false); });
+
+  const theme = document.querySelector<HTMLButtonElement>('.theme')!;
+  const root = document.documentElement;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  theme.setAttribute('aria-pressed', String(isDark()));
+  theme.addEventListener('click', () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    theme.setAttribute('aria-pressed', String(isDark()));
     try { localStorage.setItem('theme', root.dataset.theme); } catch {}
   });
 </script>

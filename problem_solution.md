@@ -91,3 +91,7 @@ Logged in with `npx wrangler login` (OAuth in the browser). Created Pages projec
 ## P13 In-house pixel icons read as crude and wide at 48 px (SOLVED for the feature row, dialog and pricing)
 
 The 16x16 pixel icons (chip, unlocked, coin, envelope) were shown at 3x on the landing page and looked rough and wide next to the text. Replaced them with Lucide glyphs (`plug`, `lock-open`, `coins`, `shield-check`, `mail`, `calendar-clock`) inside a notched `.tile frame` (global.css), so the pixel look stays in the frame and the glyph stays crisp. The pixel art files remain in `art/` and `public/img/icons/` and are still used by the model cards and Status page.
+
+## P16 Nav cramped at 860-1050 px, mobile menu sticky (SOLVED, Track C)
+
+At ~800-1040 px "Start here" and "Join the waitlist" wrapped to two lines. The mobile menu sat at a raw `top: 4.25rem` (wrong when the notice bar wraps to three lines at 375 px), never closed except by its own button, and stayed open after resizing to desktop. Fix in `Nav.astro`: `white-space: nowrap` on links and actions, breakpoint moved to 1024 px (the only copy of it; the script checks whether the menu button is visible instead of repeating the number), menu positioned `top: 100%` of a `position: relative` header, closes on Escape (focus back to the button), outside click, link or waitlist click, and on growing past the breakpoint; opening moves focus to the first link. Theme button now reads "Dark theme" with `aria-pressed`. Checked at 1040 px and 375 px, light and dark, no sideways scroll.
