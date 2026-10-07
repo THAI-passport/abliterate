@@ -137,5 +137,6 @@ Findings 11 and 12 in `docs/IMPROVEMENTS.md`.
      - If secrets are not yet configured, the deploy step logs a notice and skips deployment cleanly so CI checks still validate code.
 
 4. **Repo hygiene**:
-   - Added `.nvmrc` with `20`.
+   - Node version requirement: Astro 7 hardcodes `engines: ">=22.12.0"` in `bin/astro.mjs`. Node 20 exits with error code 1 (`Node.js v20.20.2 is not supported by Astro! Please upgrade Node.js to a supported version: ">=22.12.0"`). Therefore `.nvmrc` and CI use Node 22 (LTS >=22.12).
+   - Added `.nvmrc` with `22`.
    - Added `.github/dependabot.yml` configured for weekly grouped npm dependency updates.
