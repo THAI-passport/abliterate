@@ -111,3 +111,10 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - Redaction bar: exactly two on the site, 404 ("missing") and Status ("750"). In forced-colors mode the word shows, outlined; in print the bar prints as a bar.
 - Waitlist (2026-10-08): no plan or source tags (P4 closed, AGENTS.md unchanged). An already-subscribed address gets the same success reply as a new one, so membership is never revealed (P5 closed); the `exists` and `unconfirmed` errors are gone from the function, the dialog and `dialogue.md`. The reply shape for a duplicate is still unverified against the real API.
 - Copy decisions (2026-10-08): the Free plan is removed (see Pricing). The FAQ keeps "uncensored AI" in "Who is this for?" on purpose, as what people search for.
+
+## CI and Automated Audit Decisions (2026-10-08, Track D)
+
+- **Astro check and TypeScript support**: `@astrojs/check` requires TypeScript 5/6 and does not support TypeScript 7. Pinned `typescript` in devDependencies to `^6.0.3` to ensure `astro check` runs reliably.
+- **Ambient fetch Response typing**: Added `tools/audit/ambient.d.ts` to extend `Response.json(): Promise<any>`. This bridges browser DOM fetch typing with `@cloudflare/workers-types` without modifying component files owned by other tracks.
+- **Playwright audit suite (`npm run audit`)**: Automates P11 checks and AGENTS binding rules across all 18 routes x 2 viewports (375px, 1440px) x 2 themes (light, dark). Captures full-page failure screenshots to `tools/audit/failures/`.
+- **Cloudflare Pages deploy via GitHub Actions**: Uses `cloudflare/wrangler-action` on PRs (preview deployments) and `main` (production deployment). Automatically posts the preview URL back to pull requests using `actions/github-script`. If secrets are not yet configured in GitHub repository settings, deploys are skipped gracefully with guidance while retaining all test and audit checks.

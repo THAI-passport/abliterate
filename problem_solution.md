@@ -95,3 +95,47 @@ The 16x16 pixel icons (chip, unlocked, coin, envelope) were shown at 3x on the l
 ## P16 Nav cramped at 860-1050 px, mobile menu sticky (SOLVED, Track C)
 
 At ~800-1040 px "Start here" and "Join the waitlist" wrapped to two lines. The mobile menu sat at a raw `top: 4.25rem` (wrong when the notice bar wraps to three lines at 375 px), never closed except by its own button, and stayed open after resizing to desktop. Fix in `Nav.astro`: `white-space: nowrap` on links and actions, breakpoint moved to 1024 px (the only copy of it; the script checks whether the menu button is visible instead of repeating the number), menu positioned `top: 100%` of a `position: relative` header, closes on Escape (focus back to the button), outside click, link or waitlist click, and on growing past the breakpoint; opening moves focus to the first link. Theme button now reads "Dark theme" with `aria-pressed`. Checked at 1040 px and 375 px, light and dark, no sideways scroll.
+
+## P17 CI, local checks, and Cloudflare Pages deploys (SOLVED, Track D)
+
+Findings 11 and 12 in `docs/IMPROVEMENTS.md`.
+
+1. **Local check & typecheck**:
+   - Installed `@astrojs/check` and pinned TypeScript to `^6.0.3` because `@astrojs/check` requires TypeScript 5/6 and does not support TS 7 yet.
+   - Added `@types/node` so `Sprite.astro` resolves `node:fs`.
+   - Added `check` script (`astro check`) which checks `.astro` components, pages, and `functions/api/waitlist.ts`.
+   - Added ambient type helper `tools/audit/ambient.d.ts` for DOM `Response.json(): Promise<any>` so typecheck passes cleanly with `@cloudflare/workers-types` without modifying other tracks' component files.
+
+2. **Hard-rules audit suite (`npm run audit`)**:
+   - Created `tools/audit/audit.mjs` using Playwright Chromium to audit all 18 routes in `dist/` across `{375, 1440}px` viewports and `{light, dark}` color schemes (72 runs total).
+   - Enforces all AGENTS hard rules as automated tests:
+     - Horizontal overflow (`scrollWidth > clientWidth`).
+     - Interactive elements under 44x44 px (exempting in-sentence `.linkish` per P11 and line-height constrained inline prose links).
+     - Text contrast below 4.5:1 (3:1 for large text >= 24px or >= 18.66px bold) across light and dark modes, with alpha compositing, skipping `.redact` intentional transparent text.
+     - Emoji anywhere in visible text or `<title>` (`/\p{Extended_Pictographic}/u`).
+     - Any `title=` attributes (`[title]`).
+     - Any native `<select>` menus.
+     - Any inline `alert(`, `confirm(`, `prompt(` calls in `<script>` tags or event handlers.
+     - Fictional model notice text present on every page.
+   - Automatically builds before auditing and captures screenshots in `tools/audit/failures/` on any failure.
+
+3. **GitHub Actions CI & Cloudflare Pages deploys (`.github/workflows/ci.yml`)**:
+   - Runs on push to `main` and on pull requests.
+   - Environment: Node 20 (`.nvmrc`), npm cache, `npm ci`, Playwright browser cache, `npm run check`, `npm run build`, `npm run audit`.
+   - Uploads `tools/audit/failures/` artifact on failure.
+   - Deploys via `cloudflare/wrangler-action@v3` (`pages deploy dist --project-name abliterate --branch ${{ github.head_ref || github.ref_name }}`):
+     - `main` deploys to production.
+     - PRs deploy preview environments and comment the preview URL on the PR using `actions/github-script@v7`.
+   - Token permissions for `CLOUDFLARE_API_TOKEN`:
+     - In Cloudflare Dashboard -> My Profile -> API Tokens -> Create Custom Token:
+     - Permissions: `Account` -> `Cloudflare Pages` -> `Edit`
+     - Account Resources: Include `All accounts` (or select the specific account containing `abliterate`)
+     - Zone Resources: None
+   - Repo secrets needed in GitHub repository settings (Settings -> Secrets and variables -> Actions):
+     - `CLOUDFLARE_API_TOKEN`: the custom API token created above
+     - `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare Account ID from the dashboard
+     - If secrets are not yet configured, the deploy step logs a notice and skips deployment cleanly so CI checks still validate code.
+
+4. **Repo hygiene**:
+   - Added `.nvmrc` with `20`.
+   - Added `.github/dependabot.yml` configured for weekly grouped npm dependency updates.
