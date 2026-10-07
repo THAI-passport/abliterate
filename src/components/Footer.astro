@@ -16,6 +16,6 @@ import Logo from './Logo.astro';
   .cols { display: grid; gap: var(--s3); grid-template-columns: 2fr repeat(3, 1fr); }
   @media (max-width: 720px) { .cols { grid-template-columns: 1fr 1fr; } .cols > :first-child { grid-column: 1 / -1; } }
   ul { list-style: none; margin: 0; padding: 0; }
-  li a { display: inline-flex; align-items: center; min-height: var(--touch); }
+  li a { display: inline-flex; align-items: center; min-height: var(--touch); min-width: var(--touch); }
   .small { font-size: var(--fs-xs); margin-top: var(--s3); }
 </style>

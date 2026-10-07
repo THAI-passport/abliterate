@@ -30,9 +30,9 @@ const path = Astro.url.pathname;
   ul a[aria-current='page'] { text-decoration: underline; text-decoration-color: var(--action); text-decoration-thickness: 3px; }
   .soon { color: var(--ink-2); }
   .actions { display: flex; align-items: center; gap: var(--s1); }
-  .theme { padding: 0 var(--s1); }
+  .theme { padding: 0 var(--s1); min-width: var(--touch); }
   :root:not([data-theme='dark']) .theme .icon:last-child, :root[data-theme='dark'] .theme .icon:first-child { display: none; }
-  .menu { display: none; padding: 0 var(--s1); }
+  .menu { display: none; padding: 0 var(--s1); min-width: var(--touch); }
   @media (max-width: 860px) {
     .menu { display: inline-flex; }
     nav { display: none; position: absolute; left: 0; right: 0; top: 4.25rem; z-index: 10; flex-direction: column; align-items: stretch; padding: var(--s2); background: var(--paper); border-bottom: 2px solid var(--line); }

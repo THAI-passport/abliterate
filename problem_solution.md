@@ -71,3 +71,15 @@ Owner chose to hide membership: a duplicate gets the same success reply as a new
 ## P10 update (2026-10-08): SOLVED
 
 There is no free plan. Free was removed from `plans.ts`, pricing, FAQ, landing and `dialogue.md`; the landing teaser now reads "credits start at $10" from the smallest top-up. "uncensored AI" stays in the FAQ. Stripe Tax and Stripe are filled into pricing, terms and privacy (P9 payment provider and taxes done).
+
+## P5 update 2 (2026-10-08): docs checked, live call still OPEN
+
+Buttondown's create-subscriber docs say a duplicate email returns HTTP 400 ("the subscriber will not be created") and a new one gets double opt-in by default; auth is `Authorization: Token <key>` (matches the function). The 400 body text is not documented, so the function's `/already|exists/` match on a 400 is a guess; a 400 with other text shows "invalid". Still to do: one real call with a key in `.dev.vars` to read the actual body, then tighten the match.
+
+## P11 Contrast and touch-size fixes from the 2026-10-08 audit (SOLVED)
+
+A scripted audit (13 pages x 375/1440 px x light/dark: sideways scroll, targets under 44 px, text contrast under 4.5:1) found: bright orange text on paper at 3.0:1 (Status "degraded", waitlist error line); the green "operational" at 3.9:1; the orange "Notice" tag on the light notice bar in dark mode at 2.8:1; menu, theme and footer FAQ targets 31 to 35 px wide. Fix, tokens only: `--ok` darker, new `--action-text` and `--on-redact-accent`, `min-width: var(--touch)`. After the fix every combination passes. Not covered: the inline "Join the waitlist" link-button in Start step 2 is 27 px tall (in-sentence link, left as is); the print layout of the 404 and Status pages shows the mobile menu button (harmless, bars print as bars). Forced-colors was not emulated (needs DevTools rendering emulation, which this session cannot reach): open `/404` and `/status` with Emulate CSS forced-colors: active and confirm the barred word shows outlined.
+
+## P12 Cloudflare Pages settings (written down, not yet checked in the dashboard)
+
+Build command `npm run build`, output directory `dist`, Node 20 or newer, no root directory. Functions are picked up from `functions/` at the repo root. Secret: `BUTTONDOWN_API_KEY` as an encrypted variable for Production and Preview. No `wrangler.toml` exists; local testing needs `npx wrangler pages dev dist` with a `.dev.vars` file (git-ignored).

@@ -17,8 +17,10 @@
   --action-ink: #111111;   /* text on the action colour: black passes AA, white does not */
   --line: #111111;
   --shadow: #111111;
-  --ok: #1f8a3b;
+  --ok: #1a7032;           /* text-safe green on paper (4.5:1) */
+  --action-text: #b32d0b;  /* the action orange as text on paper (4.5:1); the bright orange fails as text */
   --focus: #ff4a1c;
+  --on-redact-accent: #ff4a1c;  /* orange on the notice bar, which is black here and light in dark mode */
 
   --f-display: 'Silkscreen', 'Pixel Fallback', 'IBM Plex Sans', 'IBM Plex Sans Thai Looped', system-ui, sans-serif;
   --f-pixel: 'Pixelify Sans', 'Pixel Fallback', 'IBM Plex Sans', 'IBM Plex Sans Thai Looped', system-ui, sans-serif;
@@ -51,10 +53,10 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --paper: #0d0d0d; --paper-2: #1a1a1a; --ink: #ece9e1; --ink-2: #a8a49a;
-    --redact: #ece9e1; --line: #ece9e1; --shadow: #ff4a1c; --ok: #4cc96b;
+    --redact: #ece9e1; --line: #ece9e1; --shadow: #ff4a1c; --ok: #4cc96b; --action-text: #ff4a1c; --on-redact-accent: #b32d0b;
   }
 }
 :root[data-theme='dark'] {
   --paper: #0d0d0d; --paper-2: #1a1a1a; --ink: #ece9e1; --ink-2: #a8a49a;
-  --redact: #ece9e1; --line: #ece9e1; --shadow: #ff4a1c; --ok: #4cc96b;
+  --redact: #ece9e1; --line: #ece9e1; --shadow: #ff4a1c; --ok: #4cc96b; --action-text: #ff4a1c; --on-redact-accent: #b32d0b;
 }
