@@ -95,3 +95,41 @@ The 16x16 pixel icons (chip, unlocked, coin, envelope) were shown at 3x on the l
 ## P16 Nav cramped at 860-1050 px, mobile menu sticky (SOLVED, Track C)
 
 At ~800-1040 px "Start here" and "Join the waitlist" wrapped to two lines. The mobile menu sat at a raw `top: 4.25rem` (wrong when the notice bar wraps to three lines at 375 px), never closed except by its own button, and stayed open after resizing to desktop. Fix in `Nav.astro`: `white-space: nowrap` on links and actions, breakpoint moved to 1024 px (the only copy of it; the script checks whether the menu button is visible instead of repeating the number), menu positioned `top: 100%` of a `position: relative` header, closes on Escape (focus back to the button), outside click, link or waitlist click, and on growing past the breakpoint; opening moves focus to the first link. Theme button now reads "Dark theme" with `aria-pressed`. Checked at 1040 px and 375 px, light and dark, no sideways scroll.
+
+## P18 Design pass on landing, models, and pricing (Track E) (SOLVED)
+
+Hallmark audit on live site (https://abliterate.pages.dev) across 1440 px, 900 px, and 375 px, light and dark mode:
+
+### Hallmark Audit Findings
+
+1. **Landing rhythm and voice hierarchy (Finding 14, Major)**
+   - *Tell*: Buried brand voice and dense structural pacing.
+   - *Evidence*: "What people are saying" fictional quotes block is the most distinctive, voice-forward element on the landing page, but sat in section 5 beneath 4 heavy values cards, the code sample, and 6 model cards. Model cards were text-heavy rectangles with no pixel identity. The trust row was a dense 6-bullet block with low scannability.
+   - *Screenshots*:
+     - Before: `build/track-e/before-landing-1440-light.png`, `build/track-e/before-landing-1440-dark.png`, `build/track-e/before-landing-375-light.png`, `build/track-e/before-landing-375-dark.png`
+     - After: `build/track-e/after-landing-1440-light.png`, `build/track-e/after-landing-1440-dark.png`, `build/track-e/after-landing-900-light.png`, `build/track-e/after-landing-900-dark.png`, `build/track-e/after-landing-375-light.png`, `build/track-e/after-landing-375-dark.png`
+   - *Solution*: Kept all copy, vocabulary, and fictional notices intact. Tightened the Values section into a punchier 4-column strip of notched cards. Elevated the "What people are saying" fictional quotes section directly above the code sample and models section for earlier brand voice delivery. Enriched ModelCard with 2x in-house 16px pixel icon badges (`chip.png`, `unlocked.png`, `token.png`, `status.png`, `subscription.png`, `coin.png`). Restructured the 6 trust links into a responsive grid of notched tiles with stepped hover feedback and touch targets >= 44 px.
+
+2. **Models index lacks comparative scanning (Finding 15, Major)**
+   - *Tell*: Missing comparative density (users had to read across 6 cards to compare cost, context, and specialty).
+   - *Evidence*: `/models` only presented a grid of 6 cards without a matrix for side-by-side evaluation.
+   - *Screenshots*:
+     - Before: `build/track-e/before-models-1440-light.png`, `build/track-e/before-models-1440-dark.png`, `build/track-e/before-models-375-light.png`, `build/track-e/before-models-375-dark.png`
+     - After: `build/track-e/after-models-1440-light.png`, `build/track-e/after-models-1440-dark.png`, `build/track-e/after-models-900-light.png`, `build/track-e/after-models-900-dark.png`, `build/track-e/after-models-375-light.png`, `build/track-e/after-models-375-dark.png`
+   - *Solution*: Added `ModelComparisonTable.astro` rendered from `models.ts` with columns: Model name (with `fictional` tag and link), Best for (`m.tagline`), Context (`ctx(m.context)`), Input price / 1M (`usd(m.inputPrice)`), and Output price / 1M (`usd(m.outputPrice)`). Wrapped inside a notched `.scroll.frame` container enabling internal horizontal scroll on narrow mobile viewports while preventing horizontal overflow on the page. Added stepped hover highlight to table rows.
+
+3. **Pricing lacks concrete usage estimator (Finding 16, Major)**
+   - *Tell*: Cognitive translation friction ("1 credit = $1 at each model rate" requires mental math).
+   - *Evidence*: Visitors could not immediately calculate monthly credit costs for realistic daily token volumes or determine whether Pro (22 credits/mo) or Max (120 credits/mo) covered their workload.
+   - *Screenshots*:
+     - Before: `build/track-e/before-pricing-1440-light.png`, `build/track-e/before-pricing-1440-dark.png`, `build/track-e/before-pricing-375-light.png`, `build/track-e/before-pricing-375-dark.png`
+     - After: `build/track-e/after-pricing-1440-light.png`, `build/track-e/after-pricing-1440-dark.png`, `build/track-e/after-pricing-900-light.png`, `build/track-e/after-pricing-900-dark.png`, `build/track-e/after-pricing-375-light.png`, `build/track-e/after-pricing-375-dark.png`, `build/track-e/after-pricing-estimator-keyboard.png`
+   - *Solution*: Built `CreditEstimator.astro` with Level 0 tone ("planned rates, estimate only"). Uses accessible custom radio cards for model selection (no native `<select>`, conforming to AGENTS rule 2), daily input and output token number inputs with preset buttons, monthly projection calculation based on 30-day volume, and dynamic plan recommendation (Pro, Max, or Top-up packs derived from `plans.ts`). Includes initial static server calculation for full zero-JS fallback.
+
+4. **Tactile micro-interactions and stepped motion (Minor)**
+   - *Solution*: Added stepped transitions (`var(--t-fast) var(--step)`), notched hover translations (`translate(calc(var(--px) * -1), calc(var(--px) * -1))`), tactile active press depressions, and full `@media (prefers-reduced-motion: reduce)` overrides disabling transforms and transitions across all interactive elements.
+
+Verification:
+- `npm run build` passes (18 static pages, 0 `[COPY:` placeholders).
+- Playwright script verified viewports at 1440 px, 900 px, and 375 px in light and dark mode with zero horizontal overflow on all pages (`scrollWidth <= innerWidth`).
+- Full keyboard navigation verified on Credit Estimator: radio button focus/space selection, number input typing, preset button enter selection, and plan recommendation updates.

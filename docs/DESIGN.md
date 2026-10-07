@@ -111,3 +111,19 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - Redaction bar: exactly two on the site, 404 ("missing") and Status ("750"). In forced-colors mode the word shows, outlined; in print the bar prints as a bar.
 - Waitlist (2026-10-08): no plan or source tags (P4 closed, AGENTS.md unchanged). An already-subscribed address gets the same success reply as a new one, so membership is never revealed (P5 closed); the `exists` and `unconfirmed` errors are gone from the function, the dialog and `dialogue.md`. The reply shape for a duplicate is still unverified against the real API.
 - Copy decisions (2026-10-08): the Free plan is removed (see Pricing). The FAQ keeps "uncensored AI" in "Who is this for?" on purpose, as what people search for.
+
+## Design pass decisions (2026-10-08, Track E, P18)
+
+- **Landing rhythm and brand voice elevation**:
+  - The fictional quotes section ("What people are saying") is moved directly above the code sample and six-model catalogue. This introduces abliterate's unique deadpan humor early before the technical specifications.
+  - The four value propositions are tightened into a compact horizontal strip of notched cards.
+  - The six trust row items are converted from a dense text list into a structured grid of notched badge tiles with stepped hover feedback, maintaining minimum 44 px touch targets.
+- **Model catalogue identity and comparison**:
+  - Model cards now feature 2x integer-scaled in-house 16 px pixel icons (`chip.png`, `unlocked.png`, `token.png`, `status.png`, `subscription.png`, `coin.png`) in dedicated notched header badges. Integer 2x scale (32 px) keeps glyphs razor sharp without the crudeness of 3x scaling (P13).
+  - `/models` includes a compact `ModelComparisonTable` rendering Model name (linked with `fictional` tag), Best for tagline, Context window, Input rate, and Output rate directly from `models.ts`. On mobile viewports (<= 375 px), table overflow is contained within a framed scroll container without horizontal page scroll.
+- **Credit estimator on pricing**:
+  - Built an accessible `CreditEstimator` on `/pricing` conforming to Level 0 humour and AGENTS rule 2 (no native `<select>` menus). Uses custom radio cards for model choice and number inputs with quick preset chips for daily input/output token volume.
+  - Computes monthly credits over a 30-day projection and suggests the appropriate tier (Pro plan, Max plan, or Top-up packs) dynamically from `plans.ts` and `models.ts`.
+  - Zero-JS fallback: Statically renders the initial calculation for Dong Flash (50K in / 10K out) at build time.
+- **Motion discipline**:
+  - Stepped transition curves (`var(--t-fast) var(--step)`) and tactile depression transforms are applied to all interactive cards, chips, and table rows, with full disablement under `prefers-reduced-motion: reduce`.
