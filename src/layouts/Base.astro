@@ -1,28 +1,109 @@
 ---
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/600.css';
-import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-ext-400.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
+import '@fontsource/ibm-plex-sans/latin-ext-600.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-ext-400.css';
 import '@fontsource/ibm-plex-sans-thai-looped/400.css';
+import plexSansLatin400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
 import '../styles/global.css';
 import Sprite from '../components/Sprite.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FictionNotice from '../components/FictionNotice.astro';
 import WaitlistDialog from '../components/WaitlistDialog.astro';
-interface Props { title: string; description?: string }
-const { title, description } = Astro.props;
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://abliterate.app');
+let pathname = Astro.url.pathname;
+const isNotFound = pathname.startsWith('/404') || title.toLowerCase().includes('not found');
+
+// Trailing slash consistent with what Cloudflare Pages serves (308s /pricing to /pricing/)
+if (!pathname.endsWith('/') && !pathname.includes('.')) {
+  pathname = `${pathname}/`;
+}
+
+const canonicalUrl = new URL(pathname, siteUrl).href;
+const defaultDescription = 'An API for abliterated, uncensored open-weight models, with credits and subscriptions. Planned: no model is available yet.';
+const metaDescription = description ?? (isNotFound ? 'Page not found on abliterate.' : defaultDescription);
+const pageTitle = title.includes('|') ? title : `${title} | abliterate`;
+const ogImageUrl = new URL(image ?? '/og/default.png', siteUrl).href;
+const isLanding = pathname === '/' || pathname === '';
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title.includes('|') ? title : `${title} | abliterate`}</title>
-    {description && <meta name="description" content={description} />}
+    <title>{pageTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {!isNotFound && <link rel="canonical" href={canonicalUrl} />}
+    {isNotFound && <meta name="robots" content="noindex" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="abliterate" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="abliterate: Models that say yes." />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content="abliterate: Models that say yes." />
+
+    <!-- Favicon & Touch Icon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/img/mark-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/img/mark-16.png" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+    <!-- Note: meta tags cannot read CSS variables; this is the one allowed duplicate of --paper (#f4f2ec / #0d0d0d) -->
+    <meta name="theme-color" content="#f4f2ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+
+    <!-- Preload above-the-fold fonts (Silkscreen 400 for H1, IBM Plex Sans latin 400) -->
+    <link rel="preload" href={plexSansLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/silkscreen-400.woff2" as="font" type="font/woff2" crossorigin />
+
     <script is:inline>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
+
+    {isLanding && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": `${siteUrl.origin}/#organization`,
+            "name": "abliterate",
+            "url": `${siteUrl.origin}/`,
+            "logo": `${siteUrl.origin}/img/mark-512.png`
+          },
+          {
+            "@type": "WebSite",
+            "@id": `${siteUrl.origin}/#website`,
+            "url": `${siteUrl.origin}/`,
+            "name": "abliterate",
+            "publisher": {
+              "@id": `${siteUrl.origin}/#organization`
+            }
+          }
+        ]
+      })} />
+    )}
   </head>
   <body>
     <a class="visually-hidden skip" href="#main">Skip to content</a>

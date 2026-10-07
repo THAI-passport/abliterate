@@ -47,4 +47,5 @@ Order: all five can start now. If B and E both want `tokens.css`, B only touches
 ## Status
 
 - C: done 2026-10-08 (P16).
-- A, B, D, E: prompts written, not started.
+- B: done 2026-10-08 (P15).
+- A, D, E: prompts written, not started.
