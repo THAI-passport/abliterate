@@ -28,17 +28,17 @@ jobs:
 
       - name: Cache Playwright browser
         uses: actions/cache@v4
-        id: playwright-cache
+        id: pw_cache
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
 
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        if: steps.pw_cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Install Playwright system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        if: steps.pw_cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
       - name: Type check (astro check)
@@ -89,7 +89,7 @@ jobs:
 
       - name: Deploy to Cloudflare Pages
         if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
-        id: wrangler-deploy
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -97,11 +97,11 @@ jobs:
           command: pages deploy dist --project-name abliterate --branch ${{ github.head_ref || github.ref_name }}
 
       - name: Comment Preview URL on PR
-        if: github.event_name == 'pull_request' && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && steps.wrangler-deploy.outputs.deployment-url != ''
+        if: github.event_name == 'pull_request' && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && steps.deploy.outputs.deployment-url != ''
         uses: actions/github-script@v7
         with:
           script: |
-            const url = '${{ steps.wrangler-deploy.outputs.deployment-url }}';
+            const url = '${{ steps.deploy.outputs.deployment-url }}';
             const issue_number = context.issue.number;
             const branch = context.payload.pull_request.head.ref;
             const body = `### Cloudflare Pages Preview\n\n**Preview URL:** ${url}\n**Branch:** \`${branch}\`\n**Commit:** ${context.sha}`;
