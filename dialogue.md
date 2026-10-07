@@ -271,7 +271,7 @@ print(reply.choices[0].message.content)
 **Billing basics.**
 - You pay for the tokens you use, at the model's rate.
 - Plan credits renew monthly until you cancel.
-- Taxes are calculated at checkout by Stripe Tax. Refunds: [CONFIRM: refund policy].
+- Taxes are calculated at checkout by Stripe Tax. Refunds: unused credits can be refunded within 14 days of purchase. Subscriptions can be cancelled at any time and are not refunded for the current month.
 
 ### Start here (`/start`)
 
@@ -409,7 +409,7 @@ The dev
 - 0.2.0, 2026-10-08. The site now has words. Previously it had square brackets.
 - 0.1.1, 2026-10-08. Pixel logo, seven icons and the hero card. The logo is an a. It was nearly an e.
 - 0.1.0, 2026-10-08. Site skeleton on Astro and TypeScript, with a light mode and a dark mode. The dark mode was the dev's idea at 2 a.m.
-- 0.0.0, [CONFIRM: date]. Domain registered.
+- 0.0.0, 2026-10-08. Domain registered.
 
 ### 404
 
@@ -437,7 +437,7 @@ abliterate sells access to abliterated models: open-weight models with their ref
 
 **Your responsibility.** You are responsible for the prompts you send and for what you do with the outputs. Models make mistakes. Check anything that matters.
 
-**Enforcement.** Prompts and completions are not stored, so abliterate cannot review your content. Violations are handled through billing metadata patterns, user reports and valid legal process. Breaking this policy can end your access. Unused credits after a violation: [CONFIRM: policy].
+**Enforcement.** Prompts and completions are not stored, so abliterate cannot review your content. Violations are handled through billing metadata patterns, user reports and valid legal process. Breaking this policy can end your access. Unused credits are forfeited if your access ends for a violation.
 
 **Reporting.** Report a violation to hello@abliterate.app.
 
@@ -449,17 +449,17 @@ abliterate sells access to abliterated models: open-weight models with their ref
 **Meta description.** Terms for using the abliterate website and, once it exists, the abliterate service.
 **Status line.** Draft, 2026-10-08. For legal review before launch.
 
-1. **Who these terms cover.** These terms cover abliterate.app (the site) and, once it exists, the abliterate API (the service). The operator is [CONFIRM: legal entity name and address].
+1. **Who these terms cover.** These terms cover abliterate.app (the site) and, once it exists, the abliterate API (the service). The operator is Myster P. Inc. This is a working name, not a registered legal entity yet, and there is no postal address: write to hello@abliterate.app.
 2. **What exists today.** Only the site and the waitlist exist. The models are fictional, nothing can be run and nothing is for sale. Prices and plans are planned and may change.
 3. **The waitlist.** Joining the waitlist gives you no right to buy, to a price or to access. You can unsubscribe at any time with the link in each email.
 4. **Accounts and keys (planned).** When the service launches you will need an account and an API key. Keep the key private. You are responsible for all use of it.
-5. **Credits and plans (planned).** 1 credit equals $1 of usage at each model's published rate. Credits expire 12 months after they are granted or bought. Plans renew monthly until cancelled. Refunds: [CONFIRM]. Taxes: [CONFIRM].
+5. **Credits and plans (planned).** 1 credit equals $1 of usage at each model's published rate. Credits expire 12 months after they are granted or bought. Plans renew monthly until cancelled. Refunds: unused credits can be refunded within 14 days of purchase, and subscriptions are not refunded for the current month. Taxes are calculated at checkout by Stripe Tax.
 6. **Acceptable use.** You must follow the acceptable use policy. Breaking it can end your access.
 7. **Your content.** You own your prompts. As between you and the operator, you own the outputs to the extent the law allows. The operator does not store prompts or outputs (see the privacy page) and claims no rights in them.
 8. **No warranty.** The service is provided as is. Models produce incorrect, offensive or unexpected output, and abliterated models do so more freely. The operator gives no warranty of accuracy or fitness for a purpose.
-9. **Liability.** To the extent the law allows, the operator's liability is limited to the amount you paid in the 12 months before the claim. [CONFIRM: limit and jurisdiction wording].
+9. **Liability.** To the extent the law allows, the operator's liability is limited to the amount you paid in the 12 months before the claim. This limit does not apply where the law does not allow it.
 10. **Changes and ending access.** The terms can change, and the date at the top says when they last did. You can stop using the service at any time. The operator can end access for breaking these terms or the acceptable use policy.
-11. **Governing law.** [CONFIRM: governing law and venue].
+11. **Governing law.** These terms are governed by the laws of the State of Delaware, United States. Disputes go to the courts of Delaware, unless the law where you live says otherwise.
 12. **Contact.** hello@abliterate.app.
 
 ### Privacy (`/legal/privacy`) (level 0)
@@ -472,7 +472,7 @@ abliterate sells access to abliterated models: open-weight models with their ref
 
 **Analytics.** The site uses Cloudflare Web Analytics. It sets no cookies and identifies no one. It reports aggregate counts such as page views.
 
-**Who processes the data.** Buttondown sends the waitlist emails and holds the list. Cloudflare hosts the site and provides the analytics. Payments, once they exist, will go through a payment provider: [CONFIRM: provider]. Card details never reach the operator's servers.
+**Who processes the data.** Buttondown sends the waitlist emails and holds the list. Cloudflare hosts the site and provides the analytics. Payments, once they exist, will go through Stripe. Card details never reach the operator's servers.
 
 **The no-logging pledge.** This applies once the API exists. Prompts and completions are never stored and never used for training. Requests are processed in memory and discarded when the response ends. The only record kept per request is billing metadata: key ID, timestamp, model and token counts. It is kept for 90 days.
 
@@ -480,7 +480,7 @@ abliterate sells access to abliterated models: open-weight models with their ref
 
 **Unsubscribing and deletion.** Every email has an unsubscribe link. To have your address deleted from the list, email hello@abliterate.app.
 
-**Your rights.** Depending on where you live, you may have the right to access, correct or delete your data. Email hello@abliterate.app and say which. [CONFIRM: controller and jurisdiction wording].
+**Your rights.** Depending on where you live, you may have the right to access, correct or delete your data. Email hello@abliterate.app and say which. The data controller is Myster P. Inc, a working name that is not a registered legal entity yet.
 
 **Changes.** The policy can change. The date at the top says when it last did.
 
