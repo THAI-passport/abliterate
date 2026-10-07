@@ -19,6 +19,9 @@ const { title, description = '[COPY: meta description]' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title === 'abliterate' ? title : `${title} | abliterate`}</title>
     <meta name="description" content={description} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/mark-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/mark-16.png" />
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <script is:inline>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   </head>
   <body>

@@ -45,6 +45,15 @@ Note: AGENTS.md rule 5 now means "no runtime CDN". Astro's build step is allowed
 3. Hero: a pixel GTX 750 with redaction bars (`pixel-art`).
 4. Lucide sprite: menu, x, arrow-right, copy, check, chevron-down, external-link, sun, moon.
 
+## Progress
+
+- [x] 1-3 scaffold, data, pages (placeholder copy)
+- [x] 4 waitlist function + dialog (needs BUTTONDOWN_API_KEY)
+- [x] 5 pixel art: logo mark (16/32/180/512), 7 icons (coin, unlocked, chip, subscription, token, envelope, status), GTX hero. Start Here steps use numbers, not step icons.
+- [ ] 6 hallmark + ui-ux-pro-max audit, browser check at 375 px / light / dark
+- [ ] 7 copy from dialogue.md
+- [ ] 8 deploy
+
 ## Build order
 
 1. Scaffold Astro + TS, tokens, fonts, layout, nav/footer, FictionNotice.

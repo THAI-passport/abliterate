@@ -1,0 +1,65 @@
+{
+ "name": "site",
+ "colors": [
+  {
+   "name": "ink",
+   "hex": "#111111",
+   "group": "ink"
+  },
+  {
+   "name": "ink-2",
+   "hex": "#2b2a28",
+   "group": "ink"
+  },
+  {
+   "name": "grey-1",
+   "hex": "#4a4843",
+   "group": "grey"
+  },
+  {
+   "name": "grey-2",
+   "hex": "#8a867c",
+   "group": "grey"
+  },
+  {
+   "name": "grey-3",
+   "hex": "#c9c5ba",
+   "group": "grey"
+  },
+  {
+   "name": "paper-2",
+   "hex": "#e9e6dc",
+   "group": "paper"
+  },
+  {
+   "name": "paper",
+   "hex": "#f4f2ec",
+   "group": "paper"
+  },
+  {
+   "name": "act-1",
+   "hex": "#b8300f",
+   "group": "action"
+  },
+  {
+   "name": "act-2",
+   "hex": "#ff4a1c",
+   "group": "action"
+  },
+  {
+   "name": "act-3",
+   "hex": "#ff8a63",
+   "group": "action"
+  },
+  {
+   "name": "ok-1",
+   "hex": "#1f8a3b",
+   "group": "ok"
+  },
+  {
+   "name": "ok-2",
+   "hex": "#4cc96b",
+   "group": "ok"
+  }
+ ]
+}

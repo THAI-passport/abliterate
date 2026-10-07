@@ -1,0 +1,42 @@
+size: 32x32
+palette: site
+frames: 1
+category: ui
+legend:
+  k = ink
+  w = paper
+  o = act-2
+  O = act-1
+frame 1:
+..kkkkkkkkkkkkkkkkkkkkkkkkkkkk..
+..kkkkkkkkkkkkkkkkkkkkkkkkkkkk..
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkwwwwwwwwwwwwwwkkkkkkkkkk
+kkkkkkkkwwwwwwwwwwwwwwkkkkkkkkkk
+kkkkkkwwwwwwwwwwwwwwwwwwkkkkkkkk
+kkkkkkwwwwwwwwwwwwwwwwwwkkkkkkkk
+kkkkkkkkkkkkkkkkkkwwwwwwkkkkkkkk
+kkkkkkkkkkkkkkkkkkwwwwwwkkkkkkkk
+kkkkkkkkkkkkkkkkkkwwwwwwkkkkkkkk
+kkkkkkkkkkkkkkkkkkwwwwwwkkkkkkkk
+kkooooooooooooooooooooooooooookk
+kkooooooooooooooooooooooooooookk
+kkOOOOOOOOOOOOOOOOOOOOOOOOOOOOkk
+kkOOOOOOOOOOOOOOOOOOOOOOOOOOOOkk
+kkkkkkwwwwwwkkkkkkwwwwwwkkkkkkkk
+kkkkkkwwwwwwkkkkkkwwwwwwkkkkkkkk
+kkkkkkwwwwwwkkkkkkwwwwwwkkkkkkkk
+kkkkkkwwwwwwkkkkkkwwwwwwkkkkkkkk
+kkkkkkwwwwwwwwwwwwwwwwwwwwkkkkkk
+kkkkkkwwwwwwwwwwwwwwwwwwwwkkkkkk
+kkkkkkkkwwwwwwwwwwwwwwwwwwkkkkkk
+kkkkkkkkwwwwwwwwwwwwwwwwwwkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+..kkkkkkkkkkkkkkkkkkkkkkkkkkkk..
+..kkkkkkkkkkkkkkkkkkkkkkkkkkkk..

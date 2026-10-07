@@ -1,0 +1,31 @@
+size: 16x16
+palette: site
+frames: 1
+category: icon
+legend:
+  k = ink
+  w = paper
+  G = grey-3
+  g = grey-2
+  o = act-2
+  O = act-1
+  h = act-3
+  e = ok-2
+  E = ok-1
+frame 1:
+................
+.......kk.......
+.....kkhhkk.....
+...kkhhoooOkk...
+..khhooooooOOk..
+..khoookkoooOk..
+..khookwwkooOk..
+..khookwwkooOk..
+..khoookkoooOk..
+..khooooooooOk..
+..kOOooooooOOk..
+...kkOOooOOkk...
+.....kkOOkk.....
+.......kk.......
+................
+................

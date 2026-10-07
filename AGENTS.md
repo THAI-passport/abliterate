@@ -23,7 +23,7 @@ no model is available yet. Never present them as real, never take real payment f
 | `functions/api/waitlist.ts` | Cloudflare Pages Function: waitlist -> Buttondown |
 | `public/fonts/` | vendored pixel fonts (Plex comes from `@fontsource`, bundled at build) |
 | `website-v1.md`, `grill-v1.md` | v1 plan and the decisions behind it |
-| `art/` | pixel art sources, palette, `build_fallback_font.py` (draws missing glyphs into `art/src/fonts/pixel-fallback/` and `web/fonts/pixel-fallback.woff2`) |
+| `art/` | pixel art sources (`src/logo/`, `src/icons/_make.py`, `src/hero/_make.py`), palette `art/palette/site.json` (always pass `--palette art/palette/site.json`), built PNGs copied to `public/img/`, `build_fallback_font.py` (draws missing glyphs into `art/src/fonts/pixel-fallback/` and `web/fonts/pixel-fallback.woff2`) |
 | `.claude/skills/pixel-*`, `image-to-pixel`, `tools/pixel-core/` | pixel art skills and their tool (needs Pillow). The skills were written for a game; read "the game" as "this site" |
 
 ## Skills to use

@@ -4,6 +4,7 @@ import ModelCard from '../components/ModelCard.astro';
 import CodeBlock from '../components/CodeBlock.astro';
 import Aside from '../components/Aside.astro';
 import Icon from '../components/Icon.astro';
+import PixelIcon from '../components/PixelIcon.astro';
 import { models } from '../data/models';
 import { plans } from '../data/plans';
 const sample = `from openai import OpenAI
@@ -26,13 +27,13 @@ print(reply.choices[0].message.content)`;
         <a class="btn" href="/start">Start here</a>
       </div>
     </div>
-    <div class="art frame placeholder" aria-hidden="true">[ART: pixel GTX 750 with redaction bars]</div>
+    <div class="art frame"><img class="pixel-img" src="/img/gtx-hero.png" width="72" height="44" alt="A small single-fan graphics card with its label blacked out" /></div>
   </section>
 
   <section class="wrap section">
     <h2>[COPY: value propositions heading]</h2>
     <div class="grid">
-      {[1, 2, 3].map(() => <div class="frame pad"><h3>[COPY: value]</h3><p class="muted">[COPY: value detail]</p></div>)}
+      {(['unlocked', 'token', 'chip'] as const).map((i) => <div class="frame pad"><PixelIcon name={i} scale={3} /><h3>[COPY: value]</h3><p class="muted">[COPY: value detail]</p></div>)}
     </div>
   </section>
 
@@ -75,7 +76,9 @@ print(reply.choices[0].message.content)`;
   .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--s4); align-items: center; padding-block: var(--s5); }
   .lead { font-size: var(--fs-l); }
   .ctas { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
-  .art { aspect-ratio: 4 / 3; display: grid; place-items: center; font-family: var(--f-num); color: var(--ink-2); padding: var(--s2); text-align: center; }
+  .art { display: grid; place-items: center; padding: var(--s3); background: var(--paper-2); }
+  .art img { width: 100%; height: auto; }
+  .pad h3 { margin-top: var(--s2); }
   .pad { padding: var(--s3); }
   .split { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s4); align-items: center; }
   .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }

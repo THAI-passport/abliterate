@@ -1,0 +1,6 @@
+---
+// In-house 16x16 pixel icon from art/src/icons, shown at a whole-number scale so pixels stay square.
+interface Props { name: 'coin' | 'unlocked' | 'chip' | 'subscription' | 'token' | 'envelope' | 'status'; scale?: 2 | 3 | 4 }
+const { name, scale = 2 } = Astro.props;
+---
+<img class="pixel-img" src={`/img/icons/${name}.png`} width={16 * scale} height={16 * scale} alt="" />
