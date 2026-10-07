@@ -1,3 +1,6 @@
+// DELIBERATE CI RED TEST
+const deliberateTypeError: number = "not a number";
+
 import { chromium } from 'playwright';
 import { preview } from 'astro';
 import fs from 'node:fs';
