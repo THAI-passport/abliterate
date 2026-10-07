@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import { models } from '../data/models';
+const steps = [
+  { t: '[COPY: What an API is]', b: '[COPY: plain-language explanation]' },
+  { t: '[COPY: Get your key]', b: '[COPY: key steps, once accounts exist]' },
+  { t: '[COPY: Your first request]', b: '[COPY: run this]', code: `curl https://api.abliterate.app/v1/chat/completions -H "Authorization: Bearer YOUR_KEY" -H "Content-Type: application/json" -d '{"model": "${models[0].id}", "messages": [{"role": "user", "content": "Hello"}]}'`, lang: 'curl' },
+  { t: '[COPY: The same in Python]', b: '[COPY: install, then run]', code: `pip install openai`, lang: 'shell' },
+  { t: '[COPY: Use it in an app]', b: '[COPY: SillyTavern, Open WebUI: base URL + key]' },
+];
+---
+<Base title="Start here">
+  <PageHead eyebrow="For beginners" title="Start here">[COPY: no experience needed]</PageHead>
+  <ol class="wrap steps">
+    {steps.map((s, i) => (
+      <li class="frame">
+        <span class="n num">{i + 1}</span>
+        <div><h2>{s.t}</h2><p>{s.b}</p>{s.code && <CodeBlock code={s.code} lang={s.lang} />}</div>
+      </li>
+    ))}
+  </ol>
+</Base>
+<style>
+  .steps { list-style: none; display: grid; gap: var(--s3); }
+  li { display: grid; grid-template-columns: auto 1fr; gap: var(--s2); padding: var(--s3); min-width: 0; }
+  li > div { min-width: 0; }
+  .n { font-size: 3rem; color: var(--action); }
+  h2 { font-size: var(--fs-l); }
+</style>

@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import ModelCard from '../components/ModelCard.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import Aside from '../components/Aside.astro';
+import Icon from '../components/Icon.astro';
+import { models } from '../data/models';
+import { plans } from '../data/plans';
+const sample = `from openai import OpenAI
+
+client = OpenAI(base_url="https://api.abliterate.app/v1", api_key="YOUR_KEY")
+reply = client.chat.completions.create(
+    model="${models[0].id}",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(reply.choices[0].message.content)`;
+---
+<Base title="abliterate">
+  <section class="wrap hero">
+    <div>
+      <p class="eyebrow">[COPY: eyebrow]</p>
+      <h1>[COPY: hero hook, with a <span class="redact">redacted</span> word]</h1>
+      <p class="lead muted">[COPY: hero subline: uncensored models, one OpenAI-compatible API, credits or subscription]</p>
+      <div class="ctas">
+        <button class="btn primary" type="button" data-waitlist="general">Join waitlist <Icon name="arrow-right" /></button>
+        <a class="btn" href="/start">Start here</a>
+      </div>
+    </div>
+    <div class="art frame placeholder" aria-hidden="true">[ART: pixel GTX 750 with redaction bars]</div>
+  </section>
+
+  <section class="wrap section">
+    <h2>[COPY: value propositions heading]</h2>
+    <div class="grid">
+      {[1, 2, 3].map(() => <div class="frame pad"><h3>[COPY: value]</h3><p class="muted">[COPY: value detail]</p></div>)}
+    </div>
+  </section>
+
+  <section class="wrap section split">
+    <div>
+      <h2>[COPY: drop-in API heading]</h2>
+      <p class="muted">[COPY: OpenAI-compatible, change two lines]</p>
+      <a href="/start">New to APIs? Start here</a>
+    </div>
+    <CodeBlock code={sample} lang="python" />
+  </section>
+
+  <section class="wrap section">
+    <div class="head-row"><h2>Models</h2><a href="/models">All models</a></div>
+    <div class="grid">{models.slice(0, 3).map((m) => <ModelCard model={m} />)}</div>
+  </section>
+
+  <section class="wrap section">
+    <div class="head-row"><h2>Pricing</h2><a href="/pricing">Full pricing</a></div>
+    <p class="muted">Credits from <span class="num">${Math.min(...models.map((m) => m.inputPrice)).toFixed(2)}</span> per 1M input tokens, or plans from <span class="num">${plans.find((p) => p.price > 0)!.price}</span>/month. All planned.</p>
+  </section>
+
+  <section class="wrap section">
+    <h2>[COPY: trust heading]</h2>
+    <ul class="trust">
+      <li><a href="/legal/privacy">[COPY: no-logging pledge]</a></li>
+      <li><a href="/legal/aup">[COPY: acceptable use]</a></li>
+      <li><a href="/changelog">[COPY: changelog]</a></li>
+      <li><a href="/status">[COPY: status]</a></li>
+    </ul>
+    <Aside>[COPY: dev aside]</Aside>
+  </section>
+
+  <section class="wrap section cta frame">
+    <h2>[COPY: final CTA]</h2>
+    <button class="btn primary" type="button" data-waitlist="general">Join waitlist</button>
+  </section>
+</Base>
+<style>
+  .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--s4); align-items: center; padding-block: var(--s5); }
+  .lead { font-size: var(--fs-l); }
+  .ctas { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+  .art { aspect-ratio: 4 / 3; display: grid; place-items: center; font-family: var(--f-num); color: var(--ink-2); padding: var(--s2); text-align: center; }
+  .pad { padding: var(--s3); }
+  .split { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s4); align-items: center; }
+  .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
+  .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--s2); list-style: none; padding: 0; }
+  .cta { text-align: center; padding: var(--s4) var(--s2); }
+  @media (max-width: 860px) { .hero, .split { grid-template-columns: 1fr; } }
+</style>

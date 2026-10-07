@@ -1,0 +1,21 @@
+{
+  "name": "abliterate",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-sans-thai-looped": "^5.3.0",
+    "astro": "^7.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261007.1",
+    "lucide-static": "^1.52.0",
+    "typescript": "^7.0.2"
+  }
+}

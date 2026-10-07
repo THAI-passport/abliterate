@@ -1,0 +1,11 @@
+---
+// Lucide icons inlined at build time from lucide-static (no runtime CDN). Add a name to use a new icon.
+import { readFileSync } from 'node:fs';
+const names = ['menu', 'x', 'arrow-right', 'copy', 'check', 'chevron-down', 'external-link', 'sun', 'moon', 'mail', 'search'];
+const symbols = names.map((n) => {
+  const svg = readFileSync(`node_modules/lucide-static/icons/${n}.svg`, 'utf8');
+  const inner = svg.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+  return `<symbol id="i-${n}" viewBox="0 0 24 24">${inner}</symbol>`;
+}).join('');
+---
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" set:html={symbols} />

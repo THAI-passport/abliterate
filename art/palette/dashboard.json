@@ -1,0 +1,104 @@
+{
+ "name": "dashboard",
+ "colors": [
+  {
+   "name": "outline",
+   "hex": "#03020c",
+   "group": "ink"
+  },
+  {
+   "name": "plum-1",
+   "hex": "#0e0d1e",
+   "group": "plum"
+  },
+  {
+   "name": "plum-2",
+   "hex": "#19142b",
+   "group": "plum"
+  },
+  {
+   "name": "plum-3",
+   "hex": "#32294e",
+   "group": "plum"
+  },
+  {
+   "name": "plum-4",
+   "hex": "#534f78",
+   "group": "plum"
+  },
+  {
+   "name": "plum-5",
+   "hex": "#9181a4",
+   "group": "plum"
+  },
+  {
+   "name": "cream-1",
+   "hex": "#a8a9be",
+   "group": "cream"
+  },
+  {
+   "name": "cream-2",
+   "hex": "#d6d1bd",
+   "group": "cream"
+  },
+  {
+   "name": "cream-3",
+   "hex": "#f0ebd9",
+   "group": "cream"
+  },
+  {
+   "name": "rec-1",
+   "hex": "#a21a1b",
+   "group": "rec"
+  },
+  {
+   "name": "rec-2",
+   "hex": "#f1453f",
+   "group": "rec"
+  },
+  {
+   "name": "rec-3",
+   "hex": "#ff8977",
+   "group": "rec"
+  },
+  {
+   "name": "tape-1",
+   "hex": "#3e281b",
+   "group": "tape"
+  },
+  {
+   "name": "tape-2",
+   "hex": "#5e402f",
+   "group": "tape"
+  },
+  {
+   "name": "go",
+   "hex": "#66da85",
+   "group": "go"
+  },
+  {
+   "name": "warn",
+   "hex": "#f7b83d",
+   "group": "warn"
+  }
+ ],
+ "ramps": {
+  "plum": [
+   "plum-1",
+   "plum-2",
+   "plum-3",
+   "plum-4",
+   "plum-5"
+  ],
+  "cream": [
+   "cream-1",
+   "cream-2",
+   "cream-3"
+  ],
+  "rec": [
+   "rec-1",
+   "rec-2",
+   "rec-3"
+  ]
+ }
+}

@@ -1,0 +1,61 @@
+---
+// One in-page dialog for every "join" button; [data-waitlist="<plan>"] opens it tagged with that plan.
+import Icon from './Icon.astro';
+---
+<dialog class="wl frame" aria-labelledby="wl-title">
+  <form class="body" novalidate>
+    <button class="btn close" type="button" aria-label="Close" data-close><Icon name="x" /></button>
+    <h2 id="wl-title">Join the waitlist</h2>
+    <p class="muted">[COPY: waitlist pitch] <span class="plan-line" hidden>Plan: <strong class="plan-name"></strong></span></p>
+    <label for="wl-email">Email</label>
+    <input id="wl-email" name="email" type="email" autocomplete="email" required />
+    <input type="hidden" name="plan" />
+    <p class="err" role="alert"></p>
+    <button class="btn primary" type="submit"><Icon name="mail" />Join</button>
+    <p class="muted small">[COPY: double opt-in and privacy line]</p>
+  </form>
+  <div class="body done" hidden>
+    <h2>Check your inbox</h2>
+    <p>[COPY: confirmation sent]</p>
+    <button class="btn" type="button" data-close>Close</button>
+  </div>
+</dialog>
+<style>
+  .wl { border: 0; padding: 0; width: min(28rem, calc(100vw - 2rem)); color: var(--ink); }
+  .wl::backdrop { background: color-mix(in srgb, var(--redact) 70%, transparent); }
+  .body { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s1); position: relative; }
+  .close { position: absolute; top: var(--s1); right: var(--s1); padding: 0 var(--s1); box-shadow: none; }
+  label { font-family: var(--f-pixel); }
+  input[type='email'] { min-height: var(--touch); font: inherit; padding: 0 var(--s1); background: var(--paper); color: var(--ink); border: 2px solid var(--line); border-radius: 0; }
+  .err { color: var(--action); min-height: 1.5em; margin: 0; }
+  .small { font-size: var(--fs-xs); }
+</style>
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('.wl')!;
+  const form = dlg.querySelector('form')!;
+  const done = dlg.querySelector<HTMLElement>('.done')!;
+  const err = dlg.querySelector<HTMLElement>('.err')!;
+  document.addEventListener('click', (e) => {
+    const t = (e.target as HTMLElement).closest<HTMLElement>('[data-waitlist]');
+    if (!t) return;
+    const plan = t.dataset.waitlist!;
+    form.plan.value = plan;
+    const line = dlg.querySelector<HTMLElement>('.plan-line')!;
+    line.hidden = plan === 'general';
+    dlg.querySelector('.plan-name')!.textContent = plan;
+    form.hidden = false; done.hidden = true; err.textContent = '';
+    dlg.showModal();
+  });
+  dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.email.checkValidity()) { err.textContent = 'Enter a valid email address.'; return; }
+    err.textContent = '';
+    try {
+      const r = await fetch('/api/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email: form.email.value, plan: form.plan.value, source: location.pathname }) });
+      if (!r.ok) throw new Error();
+      form.hidden = true; done.hidden = false;
+    } catch { err.textContent = 'That did not go through. Try again in a moment.'; }
+  });
+</script>

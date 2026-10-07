@@ -1,0 +1,36 @@
+---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-sans-thai-looped/400.css';
+import '../styles/global.css';
+import Sprite from '../components/Sprite.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import FictionNotice from '../components/FictionNotice.astro';
+import WaitlistDialog from '../components/WaitlistDialog.astro';
+interface Props { title: string; description?: string }
+const { title, description = '[COPY: meta description]' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === 'abliterate' ? title : `${title} | abliterate`}</title>
+    <meta name="description" content={description} />
+    <script is:inline>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
+  </head>
+  <body>
+    <a class="visually-hidden skip" href="#main">Skip to content</a>
+    <Sprite />
+    <FictionNotice />
+    <Nav />
+    <main id="main"><slot /></main>
+    <Footer />
+    <WaitlistDialog />
+  </body>
+</html>
+<style is:global>
+  .skip:focus { position: static; width: auto; height: auto; clip: auto; padding: var(--s1); }
+</style>

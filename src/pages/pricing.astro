@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PlanCard from '../components/PlanCard.astro';
+import { plans } from '../data/plans';
+import { models, usd, ctx } from '../data/models';
+---
+<Base title="Pricing">
+  <PageHead eyebrow="Planned pricing" title="Pricing">[COPY: pricing intro: credits or subscription, nothing is for sale yet]</PageHead>
+  <section class="wrap section">
+    <h2>Subscriptions</h2>
+    <div class="grid">{plans.map((p) => <PlanCard plan={p} />)}</div>
+  </section>
+  <section class="wrap section">
+    <h2>Credits</h2>
+    <p class="muted">[COPY: pay as you go, per 1M tokens]</p>
+    <div class="scroll frame">
+      <table>
+        <thead><tr><th scope="col">Model</th><th scope="col">Context</th><th scope="col">Input / 1M</th><th scope="col">Output / 1M</th></tr></thead>
+        <tbody>{models.map((m) => (
+          <tr><th scope="row"><a href={`/models/${m.id}`}>{m.name}</a> <span class="tag fiction">Fictional</span></th>
+            <td class="num">{ctx(m.context)}</td><td class="num">{usd(m.inputPrice)}</td><td class="num">{usd(m.outputPrice)}</td></tr>
+        ))}</tbody>
+      </table>
+    </div>
+    <button class="btn primary" type="button" data-waitlist="credits">Join the credits waitlist</button>
+  </section>
+</Base>
+<style>
+  .scroll { overflow-x: auto; margin-bottom: var(--s3); }
+  table { width: 100%; border-collapse: collapse; min-width: 32rem; }
+  th, td { text-align: left; padding: var(--s1) var(--s2); border-bottom: 2px solid var(--paper-2); }
+  thead th { font: var(--fs-xs) var(--f-display); text-transform: uppercase; border-bottom-color: var(--line); }
+  tbody th { font-weight: 400; }
+</style>

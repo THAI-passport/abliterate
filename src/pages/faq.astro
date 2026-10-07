@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Accordion from '../components/Accordion.astro';
+const items = Array.from({ length: 6 }, (_, i) => ({ q: `[COPY: question ${i + 1}]`, a: '[COPY: answer]' }));
+---
+<Base title="FAQ">
+  <PageHead eyebrow="Questions" title="FAQ">[COPY: FAQ intro]</PageHead>
+  <div class="wrap"><Accordion items={items} /></div>
+</Base>

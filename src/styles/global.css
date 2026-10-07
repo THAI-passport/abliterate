@@ -1,0 +1,83 @@
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--fs-m)/1.6 var(--f-body);
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+.pixel-img { image-rendering: pixelated; }
+
+h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.15; margin: 0 0 var(--s2); letter-spacing: 0.01em; }
+h1 { font-size: var(--fs-hero); }
+h2 { font-size: var(--fs-xl); }
+h3 { font-size: var(--fs-l); font-family: var(--f-pixel); }
+p { margin: 0 0 var(--s2); max-width: 65ch; }
+code, pre { font-family: var(--f-mono); font-size: var(--fs-s); }
+
+a { color: inherit; text-decoration: underline; text-decoration-color: var(--action); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { background: var(--action); color: var(--action-ink); text-decoration: none; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 var(--s2); }
+.section { padding: var(--s5) 0; }
+.muted { color: var(--ink-2); }
+.num { font-family: var(--f-num); font-size: 1.25em; line-height: 1; }
+.eyebrow { font-family: var(--f-display); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* The redaction bar: the brand device. */
+.redact { background: var(--redact); color: transparent; padding: 0 0.15em; user-select: none; }
+
+/* Notched pixel frame: four flat shadows cut the corners, one hard offset shadow below. */
+.frame {
+  background: var(--paper);
+  margin: var(--px);
+  box-shadow:
+    0 calc(var(--px) * -1) 0 0 var(--line),
+    0 var(--px) 0 0 var(--line),
+    calc(var(--px) * -1) 0 0 0 var(--line),
+    var(--px) 0 0 0 var(--line),
+    calc(var(--px) * 2) calc(var(--px) * 2) 0 0 var(--shadow);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s1);
+  min-height: var(--touch); padding: 0 var(--s3);
+  font: var(--fs-s) var(--f-display); text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--ink); background: var(--paper); border: 0; cursor: pointer; text-decoration: none;
+  margin: var(--px);
+  box-shadow:
+    0 calc(var(--px) * -1) 0 0 var(--line), 0 var(--px) 0 0 var(--line),
+    calc(var(--px) * -1) 0 0 0 var(--line), var(--px) 0 0 0 var(--line),
+    var(--px) calc(var(--px) * 2) 0 0 var(--shadow);
+  transition: transform var(--t-fast) var(--step);
+}
+.btn:hover { background: var(--paper-2); color: var(--ink); }
+.btn:active { transform: translate(var(--px), var(--px)); }
+.btn.primary { background: var(--action); color: var(--action-ink); }
+.btn.primary:hover { background: var(--action); filter: brightness(1.08); }
+
+.icon { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.tag {
+  display: inline-block; font: var(--fs-xs) var(--f-display); text-transform: uppercase;
+  padding: 0.1em 0.5em; border: 2px solid var(--line);
+}
+.tag.fiction { background: var(--redact); color: var(--paper); border-color: var(--redact); }
+
+.grid { display: grid; gap: var(--s3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+
+.placeholder { outline: 2px dashed var(--action); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+.prose { max-width: 48rem; }
+.log { padding-left: 1.2em; }

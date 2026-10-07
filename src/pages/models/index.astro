@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import ModelCard from '../../components/ModelCard.astro';
+import Icon from '../../components/Icon.astro';
+import { models } from '../../data/models';
+---
+<Base title="Models">
+  <PageHead eyebrow="Catalogue" title="Models">[COPY: catalogue intro]</PageHead>
+  <div class="wrap">
+    <label class="search frame"><Icon name="search" /><span class="visually-hidden">Filter models</span>
+      <input type="search" placeholder="Filter by name or tag" id="filter" />
+    </label>
+    <div class="grid" id="list">{models.map((m) => <div data-q={`${m.id} ${m.tags.join(' ')}`.toLowerCase()}><ModelCard model={m} /></div>)}</div>
+    <p id="empty" class="muted" hidden>[COPY: no matches]</p>
+  </div>
+</Base>
+<style>
+  .search { display: flex; align-items: center; gap: var(--s1); padding: 0 var(--s2); margin-bottom: var(--s3); max-width: 28rem; }
+  .search input { flex: 1; min-height: var(--touch); border: 0; background: transparent; color: var(--ink); font: inherit; }
+  .search input:focus { outline: none; }
+  .search:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+  #list > div { display: grid; }
+</style>
+<script>
+  const f = document.getElementById('filter') as HTMLInputElement;
+  const items = [...document.querySelectorAll<HTMLElement>('#list > div')];
+  f.addEventListener('input', () => {
+    const q = f.value.trim().toLowerCase();
+    let n = 0;
+    items.forEach((i) => { const hit = i.dataset.q!.includes(q); i.hidden = !hit; n += +hit; });
+    document.getElementById('empty')!.hidden = n > 0;
+  });
+</script>

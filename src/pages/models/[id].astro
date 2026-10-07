@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { models, usd, ctx } from '../../data/models';
+export const getStaticPaths = () => models.map((m) => ({ params: { id: m.id }, props: { m } }));
+const { m } = Astro.props;
+const curl = `curl https://api.abliterate.app/v1/chat/completions \\
+  -H "Authorization: Bearer YOUR_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"model": "${m.id}", "messages": [{"role": "user", "content": "Hello"}]}'`;
+---
+<Base title={m.name}>
+  <PageHead eyebrow={m.id} title={m.name}>{m.tagline}</PageHead>
+  <div class="wrap body">
+    <div>
+      <p><span class="tag fiction">Fictional</span> {m.tags.map((t) => <span class="tag">{t}</span>)}</p>
+      <p>[COPY: model description]</p>
+      <dl class="frame">
+        <div><dt>Context</dt><dd class="num">{ctx(m.context)}</dd></div>
+        <div><dt>Input per 1M tokens</dt><dd class="num">{usd(m.inputPrice)}</dd></div>
+        <div><dt>Output per 1M tokens</dt><dd class="num">{usd(m.outputPrice)}</dd></div>
+      </dl>
+      <button class="btn primary" type="button" data-waitlist={m.id}>Get notified</button>
+    </div>
+    <CodeBlock code={curl} lang="curl" />
+  </div>
+</Base>
+<style>
+  .body { display: grid; grid-template-columns: 1fr 1.3fr; gap: var(--s4); align-items: start; }
+  dl { display: grid; gap: var(--s1); padding: var(--s2); margin: var(--s3) var(--px); }
+  dl div { display: flex; justify-content: space-between; gap: var(--s2); }
+  dd { margin: 0; }
+  @media (max-width: 860px) { .body { grid-template-columns: 1fr; } }
+</style>

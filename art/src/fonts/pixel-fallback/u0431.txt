@@ -1,0 +1,21 @@
+size: 6x10
+palette: dashboard
+frames: 1
+category: glyph
+codepoint: U+0431
+baseline: 8
+advance: 6
+# б
+legend:
+  k = cream-3
+frame 1:
+......
+......
+......
+kkkkk.
+k.....
+kkkk..
+k...k.
+kkkk..
+......
+......

@@ -1,0 +1,25 @@
+---
+interface Props { code: string; lang?: string }
+const { code, lang = '' } = Astro.props;
+import Icon from './Icon.astro';
+---
+<div class="code frame">
+  <div class="bar"><span class="eyebrow">{lang}</span>
+    <button class="copy btn" type="button" data-code={code}><Icon name="copy" /><span>Copy</span></button>
+  </div>
+  <pre><code>{code}</code></pre>
+</div>
+<style>
+  .code { overflow: hidden; }
+  .bar { display: flex; justify-content: space-between; align-items: center; padding: 0 0 0 var(--s2); border-bottom: 2px solid var(--line); }
+  .copy { box-shadow: none; margin: 0; }
+  pre { margin: 0; padding: var(--s2); overflow-x: auto; }
+</style>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy').forEach((b) => b.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(b.dataset.code ?? '');
+    const label = b.querySelector('span')!;
+    label.textContent = 'Copied';
+    setTimeout(() => (label.textContent = 'Copy'), 1500);
+  }));
+</script>

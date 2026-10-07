@@ -1,0 +1,25 @@
+---
+import { type Model, usd, ctx } from '../data/models';
+interface Props { model: Model }
+const { model: m } = Astro.props;
+---
+<article class="card frame">
+  <div class="top"><span class="tag fiction">Fictional</span>{m.tags.map((t) => <span class="tag">{t}</span>)}</div>
+  <h3><a href={`/models/${m.id}`}>{m.name}</a></h3>
+  <code class="id">{m.id}</code>
+  <p class="muted">{m.tagline}</p>
+  <dl>
+    <div><dt>Context</dt><dd class="num">{ctx(m.context)}</dd></div>
+    <div><dt>Input / 1M</dt><dd class="num">{usd(m.inputPrice)}</dd></div>
+    <div><dt>Output / 1M</dt><dd class="num">{usd(m.outputPrice)}</dd></div>
+  </dl>
+</article>
+<style>
+  .card { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s1); }
+  .top { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  h3 { margin: var(--s1) 0 0; }
+  .id { font-size: var(--fs-xs); color: var(--ink-2); overflow-wrap: anywhere; }
+  dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s1); margin: auto 0 0; padding-top: var(--s2); border-top: 2px solid var(--line); }
+  dt { font-size: var(--fs-xs); color: var(--ink-2); }
+  dd { margin: 0; }
+</style>
