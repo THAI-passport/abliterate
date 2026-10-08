@@ -118,3 +118,19 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - Header has `position: relative`, mobile menu has `top: 100%`, so multi-line notice bars do not displace the dropdown.
 - Closing behavior: closes on Escape (focus returned to menu button), outside click, link click, or when crossing above 1024 px via `matchMedia`. Opening focuses the first menu item.
 - Theme button has `aria-label="Dark theme"` and `aria-pressed` reflecting dark mode state; icon visibility syncs with system preference and manual theme override.
+
+## Track A decisions (2026-10-08, waitlist hardening and honest status)
+
+- **Honest status**: Waitlist is marked `degraded` on `/status` via constant `waitlistStatus = 'degraded'` until `BUTTONDOWN_API_KEY` is configured in Cloudflare Pages and verified against production.
+- **Abuse protection on `/api/waitlist`**:
+  - `Content-Type: application/json` is required (400 if missing/different).
+  - Body size is capped at 1024 bytes (413 if exceeded).
+  - Origin header (when present) is validated against `https://abliterate.app`, `*.abliterate.pages.dev`, and localhost/127.0.0.1 (403 if invalid).
+  - Honeypot: added hidden input `name="hp"` in `WaitlistDialog.astro` (`tabindex="-1"`, `autocomplete="off"`, visually hidden, labelled for screen reader users as "Leave this empty"). The function returns 200 `{ ok: true }` and sinks the request without contacting Buttondown.
+  - Rate limiting: handled via Cloudflare Dashboard WAF rate-limit rule (10 requests/min per IP) at the edge, avoiding KV or Durable Object dependencies.
+  - Turnstile decision: omitted. Cloudflare Turnstile requires loading runtime JavaScript from `challenges.cloudflare.com`, which conflicts with AGENTS rule 5 (no runtime CDN). Honeypot, Origin checks, payload limits, and edge WAF rules provide sufficient abuse defense without runtime scripts.
+- **Dialog behavior**:
+  - Double submit prevention: submit button is disabled on submit with `aria-busy="true"` and literal label `"Joining..."`. Restored on error.
+  - Backdrop dismiss: clicking the dialog backdrop outside the modal boundary closes the `<dialog>`.
+  - Focus restoration: the triggering element is recorded on open, and keyboard focus is explicitly returned to it on the dialog `close` event (preventing focus drop in Safari).
+

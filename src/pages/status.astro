@@ -2,9 +2,13 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { models } from '../data/models';
+// 2026-10-08 (Track A): waitlist secret (BUTTONDOWN_API_KEY) is not yet set in production,
+// returning 502 on submissions. Flipped to 'degraded' until step 1 passes and production is verified.
+const waitlistStatus = 'degraded';
+
 const rows: [string, string][] = [
   ['Website', 'operational'],
-  ['Waitlist', 'operational'],
+  ['Waitlist', waitlistStatus],
   ['API', 'planned'],
   ...models.map((m): [string, string] => [m.short, 'not built']),
 ];

@@ -10,6 +10,10 @@ import Icon from './Icon.astro';
     <h2 id="wl-title">Join the waitlist</h2>
     <p class="muted">One email to confirm your address, and one when a model exists. Both have an unsubscribe link.</p>
     <p class="plan-line" hidden>Joining for: <strong class="plan-name"></strong></p>
+    <div class="hp-field">
+      <label for="wl-hp">Leave this empty</label>
+      <input id="wl-hp" name="hp" type="text" tabindex="-1" autocomplete="off" />
+    </div>
     <label for="wl-email">Email address</label>
     <input id="wl-email" name="email" type="email" autocomplete="email" required aria-describedby="wl-err" />
     <p class="err" id="wl-err" role="alert"></p>
@@ -33,6 +37,7 @@ import Icon from './Icon.astro';
   .body h2 { font-size: var(--fs-l); margin: var(--s1) 0 0; }
   .close { position: absolute; top: var(--s1); right: var(--s1); padding: 0 var(--s1); box-shadow: none; }
   label { font-family: var(--f-pixel); margin-top: var(--s1); }
+  .hp-field { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   input[type='email'] { min-height: var(--touch); font: inherit; padding: 0 var(--s1); background: var(--paper); color: var(--ink); border: 2px solid var(--line); border-radius: 0; }
   .err { color: var(--action-text); min-height: 1.5em; }
   .err:empty { min-height: 0; }
@@ -51,28 +56,98 @@ import Icon from './Icon.astro';
   const done = dlg.querySelector<HTMLElement>('.done')!;
   const err = dlg.querySelector<HTMLElement>('.err')!;
   const input = form.querySelector<HTMLInputElement>('input[name="email"]')!;
-  const fail = (code: string) => { err.textContent = ERR[code] ?? ERR.server; input.setAttribute('aria-invalid', 'true'); };
+  const hpInput = form.querySelector<HTMLInputElement>('input[name="hp"]');
+  const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+  const submitLabel = submitBtn.querySelector<HTMLElement>('.submit-label')!;
+
+  let triggerEl: HTMLElement | null = null;
+  let activePlan = '';
+
+  const setBusy = (busy: boolean) => {
+    submitBtn.disabled = busy;
+    if (busy) {
+      submitBtn.setAttribute('aria-busy', 'true');
+      submitLabel.textContent = 'Joining...';
+    } else {
+      submitBtn.removeAttribute('aria-busy');
+      submitLabel.textContent = activePlan ? `Join the waitlist for ${activePlan}` : 'Join the waitlist';
+    }
+  };
+
+  const fail = (code: string) => {
+    setBusy(false);
+    err.textContent = ERR[code] ?? ERR.server;
+    input.setAttribute('aria-invalid', 'true');
+  };
+
   document.addEventListener('click', (e) => {
     const t = (e.target as HTMLElement).closest<HTMLElement>('[data-waitlist]');
     if (!t) return;
-    const plan = t.dataset.planName ?? '';
-    dlg.querySelector<HTMLElement>('.plan-line')!.hidden = !plan;
-    dlg.querySelector('.plan-name')!.textContent = plan;
-    dlg.querySelector('.submit-label')!.textContent = plan ? `Join the waitlist for ${plan}` : 'Join the waitlist';
-    form.hidden = false; done.hidden = true; err.textContent = ''; input.removeAttribute('aria-invalid');
+    triggerEl = t;
+    activePlan = t.dataset.planName ?? '';
+    dlg.querySelector<HTMLElement>('.plan-line')!.hidden = !activePlan;
+    dlg.querySelector('.plan-name')!.textContent = activePlan;
+    setBusy(false);
+    if (hpInput) hpInput.value = '';
+    form.hidden = false;
+    done.hidden = true;
+    err.textContent = '';
+    input.removeAttribute('aria-invalid');
     dlg.showModal();
   });
+
   dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
+
+  // Close on backdrop click (click target is the <dialog> outside its bounding rect)
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) {
+      const rect = dlg.getBoundingClientRect();
+      const inDialog =
+        rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
+      if (!inDialog) {
+        dlg.close();
+      }
+    }
+  });
+
+  // Explicitly return focus to the button that opened the dialog
+  dlg.addEventListener('close', () => {
+    if (triggerEl) {
+      triggerEl.focus();
+      triggerEl = null;
+    }
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!input.checkValidity() || !input.value.trim()) return fail('invalid');
-    err.textContent = ''; input.removeAttribute('aria-invalid');
+    err.textContent = '';
+    input.removeAttribute('aria-invalid');
+    setBusy(true);
+
+    const email = input.value.trim();
+    const hp = hpInput ? hpInput.value.trim() : '';
+
     let r: Response;
     try {
-      r = await fetch('/api/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: input.value.trim() }) });
-    } catch { return fail('network'); }
-    if (r.ok) { form.hidden = true; done.hidden = false; done.querySelector<HTMLElement>('[data-close]')?.focus(); return; }
+      r = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, hp }),
+      });
+    } catch {
+      return fail('network');
+    }
+
+    if (r.ok) {
+      setBusy(false);
+      form.hidden = true;
+      done.hidden = false;
+      done.querySelector<HTMLElement>('[data-close]')?.focus();
+      return;
+    }
+
     const body = await r.json().catch(() => ({}));
     fail(body.error ?? 'server');
   });

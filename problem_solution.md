@@ -99,3 +99,92 @@ At ~800-1040 px "Start here" and "Join the waitlist" wrapped to two lines. The m
 ## P16 update (2026-10-08): Track C verification and matchMedia refinement
 
 Replaced `resize` listener with `matchMedia('(max-width: 1024px)').addEventListener('change')` to close stale mobile menus cleanly on crossing past the breakpoint without resize event overhead. Added system theme change listener (`matchMedia('(prefers-color-scheme: dark)')`) and CSS support so theme icon and `aria-pressed` state stay synchronized when no manual preference is set. Made mobile links full width for easy touch access. Verified keyboard-only (Tab, Enter to open, first link focused, Escape to close with focus returning to menu button), click outside, link click navigation, and touch targets >= 44px at 1440px, 900px, and 375px in both light and dark mode.
+
+## P14 Waitlist hardening, abuse protection, and honest status (SOLVED, Track A)
+
+Findings 1, 2, 3, 4, 10 in `docs/IMPROVEMENTS.md`.
+
+### Problems and Fixes
+
+1. **Honest status (Finding 1)**: In production, the waitlist secret `BUTTONDOWN_API_KEY` was not configured, returning 502 Bad Gateway on submissions while `/status` displayed "Waitlist: operational". Flipped `Waitlist` row in `src/pages/status.astro` to `degraded` via a build-time constant `waitlistStatus = 'degraded'` with a dated comment. Once the owner sets the secret and verifies production submissions, this constant can be flipped to `'operational'`.
+2. **Abuse protection (Finding 3)**:
+   - **Content-Type**: strictly requires `application/json` (returns 400 `{"error":"invalid"}` otherwise).
+   - **Body size cap**: capped at 1024 bytes max, checked via `Content-Length` and `raw.length` (returns 413 `{"error":"invalid"}`).
+   - **Origin check**: when `Origin` header is present, rejects requests with 403 `{"error":"server"}` unless matching `https://abliterate.app`, `*.abliterate.pages.dev` previews, or local development origins (`localhost`, `127.0.0.1`).
+   - **Honeypot**: added hidden input `name="hp"` in `WaitlistDialog.astro` (`tabindex="-1"`, `autocomplete="off"`, visually hidden with `.hp-field`, labelled for screen readers as "Leave this empty"). The endpoint returns 200 `{"ok":true}` immediately without calling Buttondown if the honeypot is populated.
+   - **Cloudflare WAF rate limiting**: rather than expensive KV/Durable Objects, rate limiting should be enabled directly at Cloudflare's edge in the Cloudflare dashboard:
+     - Navigation: Cloudflare Dashboard -> `abliterate.app` -> **Security** -> **WAF** -> **Rate limiting rules** -> **Create rule**.
+     - Rule name: `Rate limit waitlist submissions`
+     - Expression: `(http.request.uri.path eq "/api/waitlist" and http.request.method eq "POST")`
+     - Rate limit criteria: `10 requests per 1 minute` per IP address.
+     - Action: `Block` (or `Managed Challenge`) for `10 minutes`.
+3. **Double submit & busy state (Finding 4)**:
+   - Submit button in `WaitlistDialog.astro` is disabled upon submission with `aria-busy="true"` and label updated to literal `"Joining..."`.
+   - On error, `aria-busy` is removed, button is re-enabled, and the original plan-aware label is restored.
+4. **Dialog backdrop click & focus restoration (Finding 10)**:
+   - Added backdrop click listener checking click target is `<dialog>` outside its bounding rect, closing the dialog.
+   - Stored the trigger button element upon dialog open; on dialog `'close'` event, keyboard focus is explicitly restored to the triggering element (preventing focus loss in Safari during DOM panel swaps).
+5. **Buttondown duplicate logging (P5)**:
+   - Single-read response text handling in `functions/api/waitlist.ts` with `console.error('buttondown', r.status, resText.slice(0, 500))` to log upstream response shape for diagnosis in Cloudflare logs or `npx wrangler pages deployment tail`.
+
+### Curl Verification Results
+
+Tested against the local Cloudflare Pages Functions server (`http://localhost:8788/api/waitlist`):
+
+```bash
+# 1. Bad JSON
+curl -i -s -X POST http://localhost:8788/api/waitlist \
+  -H "content-type: application/json" \
+  -d 'not a json'
+# Result: HTTP/1.1 400 Bad Request
+# {"error":"invalid"}
+
+# 2. Huge Body (> 1024 bytes)
+curl -i -s -X POST http://localhost:8788/api/waitlist \
+  -H "content-type: application/json" \
+  -d "{\"email\":\"$(python3 -c 'print("a"*1200)')@example.com\"}"
+# Result: HTTP/1.1 413 Payload Too Large
+# {"error":"invalid"}
+
+# 3. Disallowed Origin
+curl -i -s -X POST http://localhost:8788/api/waitlist \
+  -H "content-type: application/json" \
+  -H "origin: https://evil.example.com" \
+  -d '{"email":"test@example.com"}'
+# Result: HTTP/1.1 403 Forbidden
+# {"error":"server"}
+
+# 4. Honeypot Filled
+curl -i -s -X POST http://localhost:8788/api/waitlist \
+  -H "content-type: application/json" \
+  -H "origin: https://abliterate.app" \
+  -d '{"email":"bot@example.com","hp":"I am a bot"}'
+# Result: HTTP/1.1 200 OK
+# {"ok":true}
+
+# 5. Valid Format (without secret set in dev)
+curl -i -s -X POST http://localhost:8788/api/waitlist \
+  -H "content-type: application/json" \
+  -H "origin: https://abliterate.app" \
+  -d '{"email":"user@example.com"}'
+# Result: HTTP/1.1 502 Bad Gateway (logged waitlist: BUTTONDOWN_API_KEY is not set)
+# {"error":"server"}
+```
+
+### Steps for Owner to Finish Production Setup
+
+1. Set the Buttondown secret in Cloudflare Pages:
+   ```bash
+   npx wrangler pages secret put BUTTONDOWN_API_KEY --project-name abliterate
+   ```
+2. Redeploy the project:
+   ```bash
+   npm run build && npx wrangler pages deploy dist --project-name abliterate --branch main
+   ```
+3. Test production:
+   - Submit new test email: returns 200 and triggers confirmation email.
+   - Submit the same email again: returns 200 (membership hidden).
+   - Submit `not-an-email`: returns 400 `{"error":"invalid"}`.
+   - Check `npx wrangler pages deployment tail` to verify Buttondown status and body payload.
+4. Flip `waitlistStatus = 'operational'` in `src/pages/status.astro`.
+
