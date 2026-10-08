@@ -79,7 +79,8 @@ The audit translates the binding rules from `AGENTS.md` and P11 into automated D
 6. **System Pop-ups**: Scans inline scripts and event handler attributes for `alert(`, `confirm(`, and `prompt(`.
 7. **Fictional Model Notice**: Asserts that every page contains the mandatory notice text:
    *"Every model listed here is fictional and nothing can be run yet. Prices are planned. The waitlist is the only part that works."*
-8. **Failure Screenshots**: If any failure is detected, captures full-page screenshot to `tools/audit/failures/<page>_<width>_<theme>.png` and exits with code 1.
+8. **Internal Link Validation**: Extracts all internal `a[href]` links across every page and verifies against known routes and static files in `dist/`, ensuring zero broken internal links or 404 navigation paths.
+9. **Failure Screenshots**: If any failure is detected, captures full-page screenshot to `tools/audit/failures/<page>_<width>_<theme>.png` and exits with code 1.
 
 ### 2.6 GitHub Actions CI Workflow (`.github/workflows/ci.yml`)
 - **Fast Playwright Installation**: On GitHub's `ubuntu-latest` runner, Chrome dependencies are pre-installed. Using `npx playwright install chromium` directly downloads the browser binary in ~5 seconds without hanging on interactive `apt-get` mirrors.

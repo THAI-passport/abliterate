@@ -38,6 +38,26 @@ export async function runAudit({ throwOnError = true, port = 4398, shouldBuild =
   }
 
   const routes = getHtmlRoutes(distDir);
+  const allDistFiles = [];
+  function collectFiles(dir, base = "") {
+    for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = path.join(base, ent.name);
+      if (ent.isDirectory()) {
+        collectFiles(path.join(dir, ent.name), rel);
+      } else {
+        const p = "/" + rel.replace(/\\/g, "/");
+        allDistFiles.push(p);
+        if (p.endsWith("/index.html")) {
+          allDistFiles.push(p.slice(0, -"/index.html".length) || "/");
+          allDistFiles.push(p.slice(0, -"index.html".length));
+        } else if (p.endsWith(".html")) {
+          allDistFiles.push(p.slice(0, -".html".length));
+        }
+      }
+    }
+  }
+  collectFiles(distDir);
+  const validPaths = Array.from(new Set(allDistFiles));
   console.log(`[audit] Auditing ${routes.length} pages across viewports {375, 1440} and themes {light, dark}...`);
 
   const server = await preview({ server: { port } });
@@ -68,7 +88,7 @@ export async function runAudit({ throwOnError = true, port = 4398, shouldBuild =
             document.documentElement.setAttribute('data-theme', th);
           }, theme);
 
-          const issues = await page.evaluate(({ theme }) => {
+          const issues = await page.evaluate(({ theme, validPaths }) => {
             const pageIssues = [];
             const doc = document.documentElement;
             const body = document.body;
@@ -299,8 +319,23 @@ export async function runAudit({ throwOnError = true, port = 4398, shouldBuild =
               });
             }
 
+            // 9. Dead links / broken internal links
+            const links = Array.from(document.querySelectorAll("a[href]"));
+            for (const a of links) {
+              const href = a.getAttribute("href");
+              if (!href || href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:") || href.startsWith("#") || href.startsWith("javascript:")) continue;
+              const cleanHref = href.split("?")[0].split("#")[0];
+              if (!cleanHref) continue;
+              if (!validPaths.includes(cleanHref)) {
+                pageIssues.push({
+                  rule: "broken_internal_link",
+                  message: "Broken internal link href=\"" + href + "\" does not match any valid route or file in dist/",
+                });
+              }
+            }
+
             return pageIssues;
-          }, { route, width, theme });
+          }, { route, width, theme, validPaths });
 
           if (issues.length > 0) {
             fs.mkdirSync(screenshotsDir, { recursive: true });
