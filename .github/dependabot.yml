@@ -4,6 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Pinned to TypeScript 6 per tools/audit/README.md; @astrojs/check does not yet support TypeScript 7
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       dependencies:
         patterns:
