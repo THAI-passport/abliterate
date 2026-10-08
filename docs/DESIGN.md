@@ -142,3 +142,10 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - **Theme color duplication:** The two `<meta name="theme-color">` tags (light `#f4f2ec`, dark `#0d0d0d`) duplicate `--paper`. This is explicitly documented in markup as the only allowed variable duplication because browser `<meta>` tags cannot read CSS variables.
 - **Font subsets and preloading:** Display fonts used above the fold (`silkscreen-400.woff2` and IBM Plex Sans latin 400) are preloaded via `<link rel="preload" as="font" type="font/woff2" crossorigin>`. Font imports for IBM Plex Sans and Plex Mono were restricted to latin and latin-ext subsets, keeping IBM Plex Sans Thai Looped. This reduced built font assets from 25 to 9 while preserving Thai script support.
 
+## CI and Automated Audit Decisions (2026-10-08, Track D)
+
+- **Astro check and TypeScript support**: `@astrojs/check` requires TypeScript 5/6 and does not support TypeScript 7. Pinned `typescript` in devDependencies to `^6.0.3` to ensure `astro check` runs reliably.
+- **Ambient fetch Response typing**: Added `tools/audit/ambient.d.ts` to extend `Response.json(): Promise<any>`. This bridges browser DOM fetch typing with `@cloudflare/workers-types` without modifying component files owned by other tracks.
+- **Playwright audit suite (`npm run audit`)**: Automates P11 checks and AGENTS binding rules across all 18 routes x 2 viewports (375px, 1440px) x 2 themes (light, dark). Captures full-page failure screenshots to `tools/audit/failures/`.
+- **Cloudflare Pages deploy via GitHub Actions**: Uses `cloudflare/wrangler-action` on PRs (preview deployments) and `main` (production deployment). Automatically posts the preview URL back to pull requests using `actions/github-script`. If secrets are not yet configured in GitHub repository settings, deploys are skipped gracefully with guidance while retaining all test and audit checks.
+

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node -e \"const s=require('child_process').spawnSync('grep',['-rlF','[COPY:','dist']);if(s.status===0){console.error('placeholder [COPY: left in:\\n'+s.stdout);process.exit(1)}\"",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check",
+    "audit": "node tools/audit/audit.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
@@ -14,8 +16,11 @@
     "astro": "^7.3.6"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@cloudflare/workers-types": "^5.20261007.1",
+    "@types/node": "^26.6.4",
     "lucide-static": "^1.52.0",
-    "typescript": "^7.0.2"
+    "playwright": "^1.63.0",
+    "typescript": "^6.0.3"
   }
 }
