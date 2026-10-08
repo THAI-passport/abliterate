@@ -53,3 +53,46 @@ Order: all five can start now. If B and E both want `tokens.css`, B only touches
 - **Track D:** done 2026-10-08 (`P17`, review in `tools/audit/README.md`).
 - **Track E:** done 2026-10-08 (`P18`, review in `docs/handoffs/E-review.md`).
 - **Post-Merge Polish:** done 2026-10-08 (44px touch targets on presets, automated dead-link check, Dependabot guardrails).
+
+## Next pass (Operations & Owner checklist)
+
+The build, design, security, accessibility, and CI pipelines are complete. The following operational items remain for the owner to complete production launch:
+
+1. **Custom Domain DNS (`abliterate.app` & `www.abliterate.app`):**
+   - Both domains have been registered to the Cloudflare Pages project `abliterate`.
+   - In Cloudflare Dashboard (`abliterate.app` DNS records), add:
+     - `CNAME` `@` (or `abliterate.app`) -> `abliterate.pages.dev` (Proxied)
+     - `CNAME` `www` -> `abliterate.pages.dev` (Proxied)
+   - Cloudflare will automatically issue Google Trust Services SSL certificates and route traffic to the production build.
+
+2. **Waitlist Upstream Secret (Finding 1, P14):**
+   - Set the Buttondown secret in Cloudflare Pages:
+     ```bash
+     npx wrangler pages secret put BUTTONDOWN_API_KEY --project-name abliterate
+     ```
+   - Verify with a live submission, then update `waitlistStatus = 'operational'` in `src/pages/status.astro`.
+
+3. **Cloudflare Edge Rate Limiting (Finding 3, P14):**
+   - In Cloudflare Dashboard -> `abliterate.app` -> **Security** -> **WAF** -> **Rate limiting rules**:
+     - Rule name: `Rate limit waitlist submissions`
+     - Expression: `(http.request.uri.path eq "/api/waitlist" and http.request.method eq "POST")`
+     - Rate limit criteria: `10 requests per 1 minute` per IP address.
+     - Action: `Block` or `Managed Challenge` for `10 minutes`.
+
+4. **GitHub Actions Auto-Deploy Secrets (Finding 12, P17):**
+   - Set repository secrets in GitHub (`Settings` -> `Secrets and variables` -> `Actions`):
+     - `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Pages edit permissions.
+     - `CLOUDFLARE_ACCOUNT_ID`: `0260d49d2b7e6c28775356adf8644d01`.
+
+5. **Legal Entity & Launch Details (Finding 17, P9):**
+   - Replace remaining `[CONFIRM: ...]` placeholders on pricing, terms, privacy, acceptable use, and changelog once the legal entity, governing jurisdiction, and refund terms are finalized.
+
+6. **Worktree Cleanup:**
+   - Now that all feature branches (`track-a-waitlist` through `track-e-design`) are merged to `main`, remove temporary desktop worktrees:
+     ```bash
+     git worktree remove ../abliterate-track-a
+     git worktree remove ../abliterate-track-b
+     git worktree remove ../abliterate-track-c
+     git worktree remove ../abliterate-track-d
+     git worktree remove ../abliterate-track-e
+     ```

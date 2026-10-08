@@ -318,3 +318,12 @@ Verification:
 - `npm run check`: 0 errors, 0 warnings across 39 files.
 - `npm run audit`: 100% pass across all 18 routes x 2 viewports x 2 themes (72 evaluations).
 - Automated browser testing verified dynamic calculation, CTA button label updates, modal plan preselection, and focus restoration.
+
+## P20 Operations and next-pass handoff (OPEN, owner)
+
+With all engineering and design tracks (A through E) merged, typechecked, and audited, the operational items for final production launch are documented in `docs/IMPROVEMENTS.md`:
+1. Cloudflare DNS CNAME records for `abliterate.app` and `www.abliterate.app` pointing to `abliterate.pages.dev` (proxied).
+2. Buttondown secret configuration in Cloudflare Pages (`BUTTONDOWN_API_KEY`) and flipping `/status` to `operational`.
+3. Cloudflare WAF rate limiting rule on `/api/waitlist` (10 req/min).
+4. GitHub Actions deployment secrets (`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`).
+5. Legal entity confirmation for remaining `[CONFIRM]` markers (P9).
