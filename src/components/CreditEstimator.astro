@@ -1,5 +1,5 @@
 ---
-import { models, type Model, usd } from '../data/models';
+import { models, usd } from '../data/models';
 import { plans, creditUsd, topUpList } from '../data/plans';
 
 const defaultModel = models[0];
@@ -271,8 +271,12 @@ if (parseFloat(initialCredits) > maxAllowance) {
     margin-top: 0.25rem;
   }
   .preset-btn {
-    min-height: 28px;
-    padding: 2px var(--s1);
+    min-height: var(--touch);
+    min-width: var(--touch);
+    padding: var(--s1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font: var(--fs-xs) var(--f-mono);
     background: var(--paper-2);
     color: var(--ink);
