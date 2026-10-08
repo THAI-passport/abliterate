@@ -47,5 +47,6 @@ Order: all five can start now. If B and E both want `tokens.css`, B only touches
 ## Status
 
 - C: done 2026-10-08 (P16).
-- A: done 2026-10-08 (P14, awaiting owner secret configuration in production).
-- B, D, E: prompts written, not started.
+- A: done 2026-10-08 (P14).
+- B: done 2026-10-08 (P15).
+- D, E: prompts written, not started.

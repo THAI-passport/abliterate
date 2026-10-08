@@ -134,3 +134,11 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
   - Backdrop dismiss: clicking the dialog backdrop outside the modal boundary closes the `<dialog>`.
   - Focus restoration: the triggering element is recorded on open, and keyboard focus is explicitly returned to it on the dialog `close` event (preventing focus drop in Safari).
 
+## Track B decisions (2026-10-08: share metadata, sitemap, security headers, fonts)
+
+- **Sitemap via endpoint:** Picked the 15-line `src/pages/sitemap.xml.ts` endpoint over `@astrojs/sitemap`. Reason: `@astrojs/sitemap` adds 9 external packages to `package.json` and `package-lock.json` (files managed by Track D), whereas a native static endpoint has zero dependencies, follows `ponytail` (minimal moving parts), and directly emits `/sitemap.xml` with trailing slashes matching Cloudflare Pages URL behavior.
+- **Canonical URLs:** Cloudflare Pages 308 redirects extensionless directory URLs (e.g., `/pricing` -> `/pricing/`). Canonical URLs are constructed from `Astro.site` and `Astro.url.pathname`, normalized with trailing slashes for all non-file routes. `/404.html` does not specify a canonical link and carries `<meta name="robots" content="noindex">`.
+- **JSON-LD Schema on landing only:** Included `Organization` and `WebSite` JSON-LD schemas exclusively on `/`. Strictly omitted `Product` or `Offer` schema: nothing is for sale yet and the models are fictional placeholders, so presenting structured prices to search engines would violate AGENTS hard rules.
+- **Theme color duplication:** The two `<meta name="theme-color">` tags (light `#f4f2ec`, dark `#0d0d0d`) duplicate `--paper`. This is explicitly documented in markup as the only allowed variable duplication because browser `<meta>` tags cannot read CSS variables.
+- **Font subsets and preloading:** Display fonts used above the fold (`silkscreen-400.woff2` and IBM Plex Sans latin 400) are preloaded via `<link rel="preload" as="font" type="font/woff2" crossorigin>`. Font imports for IBM Plex Sans and Plex Mono were restricted to latin and latin-ext subsets, keeping IBM Plex Sans Thai Looped. This reduced built font assets from 25 to 9 while preserving Thai script support.
+
