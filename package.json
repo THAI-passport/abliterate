@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node -e \"const s=require('child_process').spawnSync('grep',['-rlF','[COPY:','dist']);if(s.status===0){console.error('placeholder [COPY: left in:\\n'+s.stdout);process.exit(1)}\"",
+    "build": "astro build && node tools/redact-ledger.mjs && node -e \"const s=require('child_process').spawnSync('grep',['-rlF','[COPY:','dist']);if(s.status===0){console.error('placeholder [COPY: left in:\\n'+s.stdout);process.exit(1)}\"",
     "preview": "astro preview",
     "check": "astro check",
     "audit": "node tools/audit/audit.mjs"

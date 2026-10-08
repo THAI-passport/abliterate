@@ -319,6 +319,17 @@ export async function runAudit({ throwOnError = true, port = 4398, shouldBuild =
               });
             }
 
+            // 8b. Redaction bars never cover something a reader needs (docs/REDACTED.md rule 1)
+            const banned = 'a, button, label, thead, h1, h2, h3, code, pre, .num, .notice, .tag, [role="alert"], dialog';
+            for (const el of document.querySelectorAll('.redact')) {
+              if (el.closest(banned) || location.pathname.startsWith('/legal') || location.pathname.startsWith('/pricing')) {
+                pageIssues.push({ rule: 'redaction_on_fact', message: `Redaction bar inside a protected element: "${el.textContent}"` });
+              }
+            }
+            if (document.body.innerHTML.includes('__REDACT_COUNT__')) {
+              pageIssues.push({ rule: 'ledger_placeholder', message: 'Footer ledger placeholder was not replaced at build' });
+            }
+
             // 9. Dead links / broken internal links
             const links = Array.from(document.querySelectorAll("a[href]"));
             for (const a of links) {

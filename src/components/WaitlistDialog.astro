@@ -42,6 +42,11 @@ import Icon from './Icon.astro';
   .err { color: var(--action-text); min-height: 1.5em; }
   .err:empty { min-height: 0; }
   .submit { margin-top: var(--s1); }
+  /* While sending, a bar redacts the label in 3 steps; aria-busy carries the real state. */
+  .submit-label { position: relative; }
+  .submit[aria-busy='true'] .submit-label::after { content: ''; position: absolute; inset: 0 auto 0 0; background: var(--action-ink); animation: redacting calc(var(--t-med) * 4) var(--step) infinite; }
+  @keyframes redacting { from { width: 0; } to { width: 100%; } }
+  @media (prefers-reduced-motion: reduce) { .submit[aria-busy='true'] .submit-label::after { animation: none; width: 100%; } }
   .done-text { margin-top: var(--s1) !important; font-size: var(--fs-l); line-height: 1.45; }
   .small { font-size: var(--fs-xs); }
 </style>

@@ -1,7 +1,7 @@
 # Redacted: the bar is the joke
 
 A proposal for making the redaction bar the site's main visual device, not two easter eggs. Status:
-**proposal, not yet adopted.** Adopting it replaces the "at most one per page" rule in `docs/DESIGN.md`
+**adopted 2026-10-08** (P22). It replaces the "at most one per page" rule in `docs/DESIGN.md`
 (section "Redaction bar in text") with the rules below.
 
 ## The idea

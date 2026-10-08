@@ -33,15 +33,27 @@ a:hover { background: var(--action); color: var(--action-ink); text-decoration: 
 
 /* The redaction bar: the brand device. */
 /* The word stays in the markup for screen readers; at most one per page (docs/DESIGN.md). */
-.redact { background: var(--redact); color: transparent; padding: 0 0.15em; user-select: none; }
-/* High contrast drops backgrounds: show the word, outlined, instead of nothing (P3). */
+/* The text is always real and readable underneath; the bar is a pseudo-element that peels off (docs/REDACTED.md). */
+.redact { position: relative; cursor: pointer; }
+.redact::after {
+  content: ''; position: absolute; inset: -0.05em -0.12em; background: var(--redact);
+  transform-origin: right; transition: transform var(--t-med) var(--step);
+}
+.redact:hover::after, .redact.peeled::after { transform: scaleX(0); }
+.redact.peeled { background: color-mix(in srgb, var(--action) 25%, transparent); }
+/* High contrast drops backgrounds: show the word, outlined, never nothing (P3). */
 @media (forced-colors: active) {
-  .redact { color: CanvasText; background: none; outline: 2px solid CanvasText; forced-color-adjust: none; }
+  .redact::after { display: none; }
+  .redact { outline: 2px solid CanvasText; }
 }
 /* Printers skip backgrounds by default: print the bar as a bar. */
 @media print {
-  .redact { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .redact::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; transform: none !important; }
 }
+/* A bar with nothing under it: a section divider that looks like a censored line. */
+.rule-bar { display: flex; align-items: center; gap: var(--s2); padding-block: var(--s2); }
+.rule-bar::before { content: ''; width: 6rem; height: calc(var(--px) * 3); background: var(--redact); flex: none; }
+.rule-bar span { font: var(--fs-xs) var(--f-mono); color: var(--ink-2); }
 
 /* Notched pixel frame: four flat shadows cut the corners, one hard offset shadow below. */
 .frame {

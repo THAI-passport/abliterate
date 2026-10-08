@@ -1,14 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
+// Decorative bar lengths for the redacted "document" (in characters). Not text: aria-hidden.
+const lines = [[14, 6, 22, 9], [8, 31, 5], [19, 4, 12, 16], [27, 7]];
 ---
 <Base title="Page not found">
   <section class="wrap nf">
     <h1>404</h1>
     <p class="lead">This page is <span class="redact">missing</span>. The models do not exist either, but they have pages, which do.</p>
     <a class="btn" href="/">Go to the home page</a>
+    <div class="doc frame" aria-hidden="true">
+      <p class="doc-head">Page contents, as recovered</p>
+      {lines.map((l) => <p class="doc-line">{l.map((n) => <span class="bar" style={`--w: ${n}ch`}></span>)}</p>)}
+      <p class="doc-foot">Nothing was here. The bars are for atmosphere.</p>
+    </div>
   </section>
 </Base>
 <style>
   .nf { padding-block: var(--s6); }
   .lead { font-size: var(--fs-l); line-height: 1.45; }
+  .doc { margin-top: var(--s5); padding: var(--s3); max-width: 40rem; background: var(--paper); }
+  .doc p { margin: 0 0 var(--s2); }
+  .doc-head, .doc-foot { font: var(--fs-xs) var(--f-mono); text-transform: uppercase; color: var(--ink-2); }
+  .doc-line { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .bar { display: inline-block; width: min(var(--w), 100%); height: 1.1em; background: var(--redact); }
 </style>

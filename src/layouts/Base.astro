@@ -113,6 +113,9 @@ const isLanding = pathname === '/' || pathname === '';
     <main id="main"><slot /></main>
     <Footer />
     <WaitlistDialog />
+    <script>
+      document.addEventListener('click', (e) => (e.target as HTMLElement).closest('.redact')?.classList.toggle('peeled'));
+    </script>
   </body>
 </html>
 <style is:global>

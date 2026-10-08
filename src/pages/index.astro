@@ -38,7 +38,8 @@ const trust = [
 const quotes = [
   { q: 'Some might say the model is <u>"BASED"</u>.', who: 'A forum post, location unknown.', raw: true },
   { q: '"I asked it to stop and it asked why."', who: 'A tester who does not exist.' },
-  { q: '"Fast, as far as anyone has measured."', who: 'A benchmark that was not run.' },
+  // Over-redacted: every word barred except the punchline. Screen readers read the full sentence.
+  { q: '"I asked what it would do. It said yes, then explained."', who: 'Source withheld. The source is a text file.', bars: true },
   { q: '"Yes."', who: 'The model, asked whether it would answer.' },
 ];
 ---
@@ -49,7 +50,7 @@ const quotes = [
       <h1>Models that say yes.</h1>
       <p class="lead">An OpenAI-compatible API for abliterated models: open-weight models with the refusal behavior removed.</p>
       <p class="limits">Yes has limits. They are in the <a href="/legal/aup">acceptable use policy</a>.</p>
-      <p class="hype">A world-class, revolutionary model suite, unleashed to supercharge the user experience.*</p>
+      <p class="hype">A world-class, revolutionary model suite, <span class="redact">unleashed</span> to supercharge the user experience.*</p>
       <p class="fn">*None of these models exist yet.</p>
       <div class="cta-block">
         <button class="btn primary" type="button" data-waitlist="general">Join the waitlist <Icon name="arrow-right" /></button>
@@ -62,6 +63,7 @@ const quotes = [
     </figure>
   </section>
 
+  <div class="wrap rule-bar" aria-hidden="true"></div>
   <section class="wrap section-tight values-wrap">
     <div class="values">
       {values.map((v) => (
@@ -82,7 +84,9 @@ const quotes = [
     <div class="quotes">
       {quotes.map((x) => (
         <figure class="quote frame">
-          {x.raw ? <blockquote set:html={x.q} /> : <blockquote>{x.q}</blockquote>}
+          {x.raw ? <blockquote set:html={x.q} />
+            : x.bars ? <blockquote>{x.q.split(' ').map((w) => /yes/.test(w) ? <>{w} </> : <><span class="redact">{w}</span> </>)}</blockquote>
+            : <blockquote>{x.q}</blockquote>}
           <figcaption class="muted">{x.who}</figcaption>
         </figure>
       ))}
@@ -111,6 +115,7 @@ const quotes = [
     <div class="grid">{models.map((m) => <ModelCard model={m} />)}</div>
   </section>
 
+  <div class="wrap rule-bar" aria-hidden="true"><span>[section intentionally left blank]</span></div>
   <section class="wrap section split trust-split">
     <div>
       <h2>Pay per token, or subscribe.</h2>
@@ -156,7 +161,7 @@ const quotes = [
   .art figcaption { font-size: var(--fs-xs); margin-top: var(--s2); text-align: center; }
 
   .section-tight { padding-block: var(--s3); }
-  .values-wrap { border-top: 2px solid var(--line); padding-top: var(--s4); }
+  .values-wrap { padding-top: var(--s3); }
   .values {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));

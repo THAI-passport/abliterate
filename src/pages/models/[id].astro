@@ -6,6 +6,9 @@ import ModelCard from '../../components/ModelCard.astro';
 import { models, usd, ctx } from '../../data/models';
 export const getStaticPaths = () => models.map((m) => ({ params: { id: m.id }, props: { m } }));
 const { m } = Astro.props;
+// Split the description around its one redacted word (first whole-word match).
+const at = m.description.search(new RegExp(`\\b${m.redact}\\b`));
+const [before, after] = [m.description.slice(0, at), m.description.slice(at + m.redact.length)];
 const curl = `curl https://api.abliterate.app/v1/chat/completions \\
   -H "Authorization: Bearer ab-demo-not-a-real-key" \\
   -H "Content-Type: application/json" \\
@@ -13,10 +16,11 @@ const curl = `curl https://api.abliterate.app/v1/chat/completions \\
 ---
 <Base title={m.name} description={`${m.name}: ${m.tagline} A planned abliterated model. Fictional, not available yet.`}>
   <PageHead title={m.name}>{m.tagline}</PageHead>
+  <div class="wrap"><p class="file"><span>File: {m.id}</span><span>Status: fictional</span><span>Clearance: <span class="redact">none required</span></span></p></div>
   <div class="wrap body">
     <div>
       <p class="tags"><span class="tag fiction">fictional</span> {m.tags.map((t) => <span class="tag">{t}</span>)}</p>
-      <p>{m.description}</p>
+      <p>{before}<span class="redact">{m.redact}</span>{after}</p>
       <p class="fn">{m.footnote}</p>
       <dl class="frame">
         <div><dt>Model id</dt><dd><code>{m.id}</code></dd></div>
@@ -47,6 +51,7 @@ const curl = `curl https://api.abliterate.app/v1/chat/completions \\
   .head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s2); margin-bottom: var(--s2); }
   .head-row h2 { margin: 0; font-size: var(--fs-l); }
   .head-row a { display: inline-flex; align-items: center; min-height: var(--touch); }
+  .file { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); font: var(--fs-xs) var(--f-mono); text-transform: uppercase; color: var(--ink-2); border-block: 2px dashed var(--line); padding-block: var(--s1); max-width: none; }
   .cap { font-size: var(--fs-xs); margin-bottom: var(--s1); }
   @media (max-width: 860px) { .body { grid-template-columns: 1fr; } }
 </style>

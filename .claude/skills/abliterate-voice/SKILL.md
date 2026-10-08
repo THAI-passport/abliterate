@@ -50,7 +50,7 @@ Always the waitlist. Button text is literal: "Join the waitlist", "Join the wait
 
 ## Redaction bar in text
 
-`<span class="redact">word</span>`. Only where context makes the word obvious, at most once per page. Never on prices, legal text, code, headings, titles, alt text, buttons, links, form labels or errors. The word stays in the markup for screen readers. In forced-colors mode the text must show.
+`<span class="redact">word</span>`. Rules and tricks: `docs/REDACTED.md`. The bar is the joke and hides nothing: only on jokes and hype, where context makes the word obvious, at most one per paragraph. Never on prices, legal text, the notice, code, headings, titles, alt text, buttons, links, form labels or errors. The sentence must still be funny read aloud by a screen reader.
 
 ## Anti-AI checklist (every line)
 
