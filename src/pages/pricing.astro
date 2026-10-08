@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import Icon from '../components/Icon.astro';
 import PlanCard from '../components/PlanCard.astro';
+import CreditEstimator from '../components/CreditEstimator.astro';
 import { plans, creditUsd, creditExpiryMonths, topUpList } from '../data/plans';
 import { models, usd, ctx } from '../data/models';
 ---
@@ -13,7 +14,10 @@ import { models, usd, ctx } from '../data/models';
     <div class="grid">{plans.map((p) => <PlanCard plan={p} />)}</div>
     <p class="muted under">Joining is free and does not reserve a price.</p>
   </section>
+
   <section class="wrap section">
+    <CreditEstimator />
+
     <h2 class="ih"><Icon name="coins" />Credits</h2>
     <p>Credits are prepaid dollars. 1 credit equals <span class="num">${creditUsd}</span> of usage. Each model has its own rate per 1M tokens, with separate rates for input and output.</p>
     <div class="scroll frame">
@@ -21,13 +25,21 @@ import { models, usd, ctx } from '../data/models';
         <caption>Planned rates, in credits per 1M tokens.</caption>
         <thead><tr><th scope="col">Model</th><th scope="col">Context</th><th scope="col">Input</th><th scope="col">Output</th></tr></thead>
         <tbody>{models.map((m) => (
-          <tr><th scope="row"><a href={`/models/${m.id}`}>{m.name}</a> <span class="tag fiction">fictional</span></th>
-            <td class="num">{ctx(m.context)}</td><td class="num">{usd(m.inputPrice)}</td><td class="num">{usd(m.outputPrice)}</td></tr>
+          <tr>
+            <th scope="row">
+              <a href={`/models/${m.id}`}>{m.name}</a>
+              <span class="tag fiction">fictional</span>
+            </th>
+            <td class="num">{ctx(m.context)}</td>
+            <td class="num">{usd(m.inputPrice)}</td>
+            <td class="num">{usd(m.outputPrice)}</td>
+          </tr>
         ))}</tbody>
       </table>
     </div>
     <p>Credits can be topped up in packs of {topUpList()} at the same rate. Credits expire {creditExpiryMonths} months after they are granted or bought.</p>
   </section>
+
   <section class="wrap section">
     <h2>Billing basics</h2>
     <ul class="basics">
@@ -41,11 +53,18 @@ import { models, usd, ctx } from '../data/models';
   .first { padding-top: var(--s3); }
   .ih { display: flex; align-items: center; gap: var(--s2); }
   .under { margin-top: var(--s3); }
-  .scroll { overflow-x: auto; margin-bottom: var(--s3); }
+  .scroll { overflow-x: auto; margin-bottom: var(--s3); background: var(--paper); }
   table { width: 100%; border-collapse: collapse; min-width: 32rem; }
   caption { text-align: left; padding: var(--s2) var(--s2) 0; color: var(--ink-2); font-size: var(--fs-xs); }
-  th, td { text-align: left; padding: var(--s1) var(--s2); border-bottom: 2px solid var(--paper-2); }
-  thead th { font: var(--fs-xs) var(--f-display); text-transform: uppercase; border-bottom-color: var(--line); }
+  th, td { text-align: left; padding: var(--s2) var(--s2); border-bottom: 2px solid var(--paper-2); }
+  thead th { font: var(--fs-xs) var(--f-display); text-transform: uppercase; border-bottom: 2px solid var(--line); background: var(--paper-2); }
   tbody th { font-weight: 400; }
+  tbody th a { font-family: var(--f-pixel); margin-right: var(--s1); }
+  tbody tr { transition: background var(--t-fast) var(--step); }
+  tbody tr:hover { background: var(--paper-2); }
   .basics { padding-left: 1.2em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    tbody tr { transition: none; }
+  }
 </style>

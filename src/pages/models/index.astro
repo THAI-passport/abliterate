@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import ModelCard from '../../components/ModelCard.astro';
+import ModelComparisonTable from '../../components/ModelComparisonTable.astro';
 import Icon from '../../components/Icon.astro';
 import { models } from '../../data/models';
 const tags = ['fast', 'chat', 'reasoning', 'roleplay', 'code', 'writing', 'flagship'];
@@ -19,6 +20,7 @@ const tags = ['fast', 'chat', 'reasoning', 'roleplay', 'code', 'writing', 'flags
     </div>
     <div class="grid" id="list">{models.map((m) => <div data-q={`${m.id} ${m.name} ${m.tags.join(' ')}`.toLowerCase()} data-tags={m.tags.join(' ')}><ModelCard model={m} /></div>)}</div>
     <p id="empty" class="muted" hidden>No model matches that search. There are only six, so the check was quick.</p>
+    <ModelComparisonTable />
   </div>
 </Base>
 <style>
@@ -28,10 +30,25 @@ const tags = ['fast', 'chat', 'reasoning', 'roleplay', 'code', 'writing', 'flags
   .search input:focus { outline: none; }
   .search:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
   .tags { display: flex; flex-wrap: wrap; gap: var(--s1); }
-  .chip { min-height: var(--touch); padding: 0 var(--s2); font: var(--fs-xs) var(--f-display); text-transform: uppercase; background: var(--paper); color: var(--ink); border: 2px solid var(--line); cursor: pointer; }
+  .chip {
+    min-height: var(--touch);
+    padding: 0 var(--s2);
+    font: var(--fs-xs) var(--f-display);
+    text-transform: uppercase;
+    background: var(--paper);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    cursor: pointer;
+    transition: transform var(--t-fast) var(--step), background var(--t-fast) var(--step);
+  }
   .chip:hover { background: var(--paper-2); }
+  .chip:active { transform: translate(var(--px), var(--px)); }
   .chip[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
   #list > div { display: grid; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chip { transition: none; transform: none !important; }
+  }
 </style>
 <script>
   const f = document.getElementById('filter') as HTMLInputElement;
