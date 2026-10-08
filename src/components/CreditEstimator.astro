@@ -20,13 +20,18 @@ const initialTotalUsd = initialInCost + initialOutCost;
 const initialCredits = (initialTotalUsd / creditUsd).toFixed(2);
 
 let initialPlanText = `Top-up packs (${topUpList()}) without a subscription.`;
+let initialPlanName = "";
 if (parseFloat(initialCredits) > maxAllowance) {
   initialPlanText = `Max plan ($${maxPlan.price}/mo) plus top-up packs (${topUpList()}).`;
+  initialPlanName = maxPlan.name;
 } else if (parseFloat(initialCredits) > proAllowance) {
   initialPlanText = `Max plan ($${maxPlan.price}/mo, ${maxPlan.credits}) covers this usage.`;
+  initialPlanName = maxPlan.name;
 } else if (parseFloat(initialCredits) >= 10) {
   initialPlanText = `Pro plan ($${proPlan.price}/mo, ${proPlan.credits}) covers this usage.`;
+  initialPlanName = proPlan.name;
 }
+const initialCtaText = initialPlanName ? `Join the waitlist for ${initialPlanName}` : "Join the waitlist";
 ---
 <div class="estimator-wrap" id="estimator">
   <div class="est-head">
@@ -127,6 +132,15 @@ if (parseFloat(initialCredits) > maxAllowance) {
       <div class="plan-recommendation">
         <div class="rec-title eyebrow">Suggested plan</div>
         <p class="rec-text" id="est-plan-recommendation">{initialPlanText}</p>
+        <button
+          class="btn primary est-cta"
+          type="button"
+          data-waitlist="general"
+          data-plan-name={initialPlanName}
+          id="est-cta-btn"
+        >
+          {initialCtaText}
+        </button>
       </div>
 
       <div class="meta-breakdown muted">
@@ -331,14 +345,21 @@ if (parseFloat(initialCredits) > maxAllowance) {
     padding: var(--s2);
     background: var(--paper);
     border-left: 3px solid var(--action);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
   }
   .rec-title {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0;
   }
   .rec-text {
     margin: 0;
     font-family: var(--f-body);
     font-size: var(--fs-s);
+  }
+  .est-cta {
+    align-self: start;
+    margin-top: var(--s1);
   }
   .meta-breakdown {
     font-size: var(--fs-xs);
@@ -431,15 +452,27 @@ if (parseFloat(initialCredits) > maxAllowance) {
     if (inRateDisplay) inRateDisplay.textContent = `$${inRate.toFixed(2)} / 1M`;
     if (outRateDisplay) outRateDisplay.textContent = `$${outRate.toFixed(2)} / 1M`;
 
+    const ctaBtn = document.getElementById("est-cta-btn") as HTMLButtonElement | null;
+
     if (planDisplay) {
+      let recPlan = "";
       if (credits > maxAllowance) {
         planDisplay.textContent = `Max plan ($${maxPlan.price}/mo) plus top-up packs (${topUpsText}).`;
+        recPlan = maxPlan.name;
       } else if (credits > proAllowance) {
         planDisplay.textContent = `Max plan ($${maxPlan.price}/mo, ${maxPlan.credits}) covers this usage.`;
+        recPlan = maxPlan.name;
       } else if (credits >= 10) {
         planDisplay.textContent = `Pro plan ($${proPlan.price}/mo, ${proPlan.credits}) covers this usage.`;
+        recPlan = proPlan.name;
       } else {
         planDisplay.textContent = `Top-up packs (${topUpsText}) without a subscription.`;
+        recPlan = "";
+      }
+
+      if (ctaBtn) {
+        ctaBtn.dataset.planName = recPlan;
+        ctaBtn.textContent = recPlan ? `Join the waitlist for ${recPlan}` : "Join the waitlist";
       }
     }
   }
