@@ -327,3 +327,7 @@ With all engineering and design tracks (A through E) merged, typechecked, and au
 3. Cloudflare WAF rate limiting rule on `/api/waitlist` (10 req/min).
 4. GitHub Actions deployment secrets (`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`).
 5. Legal entity confirmation for remaining `[CONFIRM]` markers (P9).
+
+## P21 Post-merge review: duplication and uneven rhythm (SOLVED, 2026-10-08)
+
+After tracks A-E merged, every check passed but the pages repeated themselves. The models page showed the same six models twice (cards, then a comparison table that was the pricing rate table again) and had search and tag filters for six items. Fix: the models page is the card grid only; rates live on pricing. On the model cards, the tag row wrapped to two lines on some cards, so titles sat at different heights. Fix: the top row is now only "fictional" and the icon, and the use tags sit above the stats. Pricing had two plan cards filling half the row and the estimator before the rates it uses. Fix: a third card for pay-as-you-go credits (from `plans.ts`), the rate table next and then the estimator, the estimator's own outer margin removed (the section pads it), and the Context column hidden under 600 px so the rate table fits a phone. Model detail pages ended in empty space; they now list the other five models. Waitlist still shows "degraded" on Status until the Buttondown key is set (P14).

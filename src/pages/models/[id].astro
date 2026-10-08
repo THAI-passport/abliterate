@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
+import ModelCard from '../../components/ModelCard.astro';
 import { models, usd, ctx } from '../../data/models';
 export const getStaticPaths = () => models.map((m) => ({ params: { id: m.id }, props: { m } }));
 const { m } = Astro.props;
@@ -30,6 +31,10 @@ const curl = `curl https://api.abliterate.app/v1/chat/completions \\
       <CodeBlock code={curl} lang="curl" />
     </div>
   </div>
+  <section class="wrap section">
+    <div class="head-row"><h2>Other models</h2><a href="/models">All models</a></div>
+    <div class="grid">{models.filter((o) => o.id !== m.id).map((o) => <ModelCard model={o} />)}</div>
+  </section>
 </Base>
 <style>
   .body { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--s5); align-items: start; }
@@ -39,6 +44,9 @@ const curl = `curl https://api.abliterate.app/v1/chat/completions \\
   dl div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s1) var(--s2); }
   dt { color: var(--ink-2); }
   dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s2); margin-bottom: var(--s2); }
+  .head-row h2 { margin: 0; font-size: var(--fs-l); }
+  .head-row a { display: inline-flex; align-items: center; min-height: var(--touch); }
   .cap { font-size: var(--fs-xs); margin-bottom: var(--s1); }
   @media (max-width: 860px) { .body { grid-template-columns: 1fr; } }
 </style>

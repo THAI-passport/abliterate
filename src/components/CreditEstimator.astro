@@ -156,7 +156,7 @@ const initialCtaText = initialPlanName ? `Join the waitlist for ${initialPlanNam
 
 <style>
   .estimator-wrap {
-    margin: var(--s5) 0 var(--s4);
+    margin: 0;
   }
   .est-head {
     margin-bottom: var(--s3);
@@ -194,7 +194,7 @@ const initialCtaText = initialPlanName ? `Join the waitlist for ${initialPlanNam
   }
   .model-options {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
     gap: var(--s2);
   }
   .model-label {
@@ -239,6 +239,7 @@ const initialCtaText = initialPlanName ? `Join the waitlist for ${initialPlanNam
   }
   .name-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--s1);
