@@ -89,8 +89,8 @@ All tests ran on clean production build (`dist/`):
 
 When continuing work on the frontend or adjacent tracks, keep these in mind:
 
-1. **Waitlist & API Integration (Track A):**
-   - The estimator recommends plans and top-up packs. When Track A finishes buttondown integration, ensure that clicking a plan from the pricing cards passes the plan parameter cleanly to the waitlist dialog without breaking the existing static fallbacks.
+1. **Waitlist & API Integration (Track A & P19) [COMPLETED]:**
+   - The estimator recommends plans and top-up packs. In P19, `#est-cta-btn` was integrated into the recommendation card, passing `data-plan-name` ("Pro", "Max", or generic) directly to `WaitlistDialog.astro` while preserving the zero-JS static calculation fallback.
 2. **Metadata & Open Graph (Track B):**
    - Model detail pages and pricing page will benefit from og:image cards showcasing the 2x pixel iconography and credit estimator rates.
 3. **Adding New Models in Data:**

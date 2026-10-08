@@ -165,3 +165,8 @@ The final copy per page is in `dialogue.md` (Part 2). Data values (prices, credi
 - **Motion discipline**:
   - Stepped transition curves (`var(--t-fast) var(--step)`) and tactile depression transforms are applied to all interactive cards, chips, and table rows, with full disablement under `prefers-reduced-motion: reduce`.
 
+
+## Credit Estimator waitlist integration and Dependabot pinning (2026-10-08, P19)
+
+- **Credit Estimator waitlist handoff**: The Suggested Plan box in `CreditEstimator` includes a direct call-to-action button (`#est-cta-btn`) that updates dynamically with the recommended tier ("Join the waitlist for Pro", "Join the waitlist for Max", "Join the waitlist"). Clicking opens `WaitlistDialog` with `data-plan-name`, preselecting the plan and displaying "Joining for: <Plan>". Closing the modal restores keyboard focus directly to the button. Initial server rendering includes complete fallback values for users without JavaScript.
+- **Dependabot TypeScript Pin**: Configured `.github/dependabot.yml` to ignore `semver-major` bumps on `typescript`, preserving `typescript@^6.0.3` compatibility with `@astrojs/check` until upstream adds TypeScript 7 support.

@@ -295,3 +295,26 @@ The five parallel audit tracks from `docs/IMPROVEMENTS.md` have completed, merge
 - **Post-Merge Hardening:** Enforced 44px touch targets on preset buttons, added dead/broken link checking to the audit suite, and configured Dependabot ignore rules for TypeScript 7.
 
 Validation: `npm run check` (0 errors, 0 warnings, 0 hints), `npm run audit` (72/72 checks passed across 18 routes, 375/1440px, light/dark), GitHub Actions CI green.
+
+## P19 Credit Estimator waitlist CTA handoff and Dependabot TS 6 pin (SOLVED)
+
+1. **Credit Estimator CTA Handoff (`src/components/CreditEstimator.astro`)**:
+   - *Problem*: The estimator dynamically calculated monthly token costs and displayed a recommended plan text (Top-ups, Pro, or Max), but provided no direct call-to-action button. Users had to leave the estimator to find a matching plan card.
+   - *Solution*: Added primary CTA button `#est-cta-btn` inside the `.plan-recommendation` card with `data-waitlist="general"` and dynamic `data-plan-name`.
+   - *Behavior*:
+     - Top-ups (< 10 credits): Button reads `"Join the waitlist"` (`data-plan-name=""`).
+     - Pro (10–22 credits): Button reads `"Join the waitlist for Pro"` (`data-plan-name="Pro"`).
+     - Max (> 22 credits): Button reads `"Join the waitlist for Max"` (`data-plan-name="Max"`).
+     - Clicking opens `WaitlistDialog` modal, which detects `data-plan-name` and displays `"Joining for: Pro"` / `"Joining for: Max"`.
+     - Closing the modal via Escape or Close button explicitly restores keyboard focus to `#est-cta-btn`.
+     - Server-rendered static calculation provides complete zero-JS fallback.
+     - Meets AGENTS Rule 7 touch target minimum (44x44 px) and literal voice guidelines.
+
+2. **Dependabot TypeScript Pin (`.github/dependabot.yml`)**:
+   - *Problem*: Dependabot automatically opened PR #6 upgrading `typescript` from `6.0.3` to `7.0.2`, failing CI because `@astrojs/check` requires TypeScript 5/6.
+   - *Solution*: Added `ignore` rule for `semver-major` updates on `typescript` in `.github/dependabot.yml` and closed PR #6.
+
+Verification:
+- `npm run check`: 0 errors, 0 warnings across 39 files.
+- `npm run audit`: 100% pass across all 18 routes x 2 viewports x 2 themes (72 evaluations).
+- Automated browser testing verified dynamic calculation, CTA button label updates, modal plan preselection, and focus restoration.
